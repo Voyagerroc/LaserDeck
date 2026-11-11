@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# PlatformIO & Embedded
+.pio/
+.vscode/
+*.bin
+*.elf
+*.hex
+
+# Android (android/ PTT companion app)
+.gradle/
+local.properties
+keystore.properties
+*.keystore
+*.jks
+.idea/
+*.apk
+*.aab
+captures/
+
+# Cloudflare Wrangler (hesap kimliği önbelleği — depoya girmemeli)
+.wrangler/
+
+# OS & Environment
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.tmp
+*.log
+.env
+
+# Agent session directories
+.mimosa/
+.v2c/
+.video_agent/

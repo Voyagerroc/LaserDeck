@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Bir yayın kaydı. Baloncuk yok: mesajı kanalın kenarındaki dikey çizgi
+  taşıyor — solda gelen, sağda giden. Yatay boşluk kodda ayarlanır ki
+  mesaj bloğu karşı kenara kadar uzamasın.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp">
+
+    <com.voyagerroc.laserdeck.ptt.ui.TransmissionRule
+        android:id="@+id/ruleStart"
+        android:layout_width="3dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
+
+        <ImageView
+            android:id="@+id/imgAttachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/photo_received"
+            android:maxWidth="200dp"
+            android:maxHeight="220dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/metin"
+            android:textSize="16sp"
+            android:lineSpacingExtra="2dp" />
+
+        <TextView
+            android:id="@+id/txtMeta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.06"
+            android:textColor="@color/soluk"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <com.voyagerroc.laserdeck.ptt.ui.TransmissionRule
+        android:id="@+id/ruleEnd"
+        android:layout_width="3dp"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

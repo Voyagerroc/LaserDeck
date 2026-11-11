@@ -1,0 +1,1376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Aygıt paneli düzeni: üstte hat okuması, altında iki kanal (ses / metin).
+  Bölüm başlıkları gövdeye kazınmış etiketler gibi dar ve aralıklı; içerik
+  ise normal genişlikte — makine dili ile insan dili tipografiyle ayrılıyor.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <!-- === hat okuması === -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="20dp">
+
+    <!-- Radar: sol ustte. Hedef HALKA olarak cizilir - mesafeyi biliyoruz,
+         yonu Bluetooth ile bilmek fiziksel olarak mumkun degil. -->
+    <LinearLayout
+        android:id="@+id/radarBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.voyagerroc.laserdeck.ptt.ui.RadarScope
+            android:id="@+id/radar"
+            android:layout_width="74dp"
+            android:layout_height="74dp" />
+
+        <TextView
+            android:id="@+id/txtRadarRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:fontFamily="monospace"
+            android:textColor="@color/metin"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/txtRadarTrend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.06"
+            android:textColor="@color/soluk"
+            android:textSize="9sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Etiket solda, sürüm sağda: hangi sürümün kurulu olduğu uygulamanın
+             içinden görünmeliydi, yoksa güncellenip güncellenmediği anlaşılmıyor. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/label_link"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/txtVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textColor="@color/cizgi"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.02"
+            android:maxLines="1"
+            android:text="@string/status_idle"
+            android:textColor="@color/metin"
+            android:textSize="20sp" />
+    </LinearLayout>
+    </LinearLayout>
+
+    <!-- Hat göstergesi: mesaj kenarlarındaki çizgiyle aynı dil. -->
+    <View
+        android:id="@+id/viewLinkRule"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="14dp"
+        android:background="@color/cizgi" />
+
+
+    <!-- Guncelleme seridi: yeni surum bulununca gorunur -->
+    <LinearLayout
+        android:id="@+id/bannerUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_uyari"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txtUpdate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:textColor="@color/metin"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnUpdate"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:background="@drawable/btn_kapat"
+            android:fontFamily="monospace"
+            android:minWidth="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@string/update_button"
+            android:textColor="@color/lazer"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/btnUpdateDismiss"
+            android:layout_width="40dp"
+            android:layout_height="38dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/update_dismiss_desc"
+            android:focusable="true"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:text="@string/update_dismiss"
+            android:textColor="@color/soluk"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!-- === kanal seçimi === -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/tabRadio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtTabRadio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:letterSpacing="0.16"
+                android:paddingTop="15dp"
+                android:paddingBottom="13dp"
+                android:text="@string/tab_radio"
+                android:textColor="@color/metin"
+                android:textSize="13sp" />
+
+            <View
+                android:id="@+id/undRadio"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/lazer" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabChat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtTabChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:letterSpacing="0.16"
+                android:paddingTop="15dp"
+                android:paddingBottom="13dp"
+                android:text="@string/tab_chat"
+                android:textColor="@color/soluk"
+                android:textSize="13sp" />
+
+            <View
+                android:id="@+id/undChat"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabModules"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtTabModules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:letterSpacing="0.16"
+                android:paddingTop="15dp"
+                android:paddingBottom="13dp"
+                android:text="@string/tab_modules"
+                android:textColor="@color/soluk"
+                android:textSize="13sp" />
+
+            <View
+                android:id="@+id/undModules"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/cizgi" />
+
+    <!-- === kanallar === -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- TELSİZ -->
+        <LinearLayout
+            android:id="@+id/paneRadio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/label_device"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <Spinner
+                android:id="@+id/spinnerDevices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_spinner"
+                android:paddingStart="12dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="36dp"
+                android:paddingBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnListen"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.1"
+                    android:text="@string/btn_listen"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnConnect"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.1"
+                    android:text="@string/btn_connect"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnDisconnect"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.1"
+                    android:text="@string/btn_disconnect"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/hint_roles"
+                android:textColor="@color/soluk"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/label_log"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <ScrollView
+                android:id="@+id/scrollLog"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_panel"
+                android:padding="12dp"
+                android:scrollbars="none">
+
+                <TextView
+                    android:id="@+id/txtLog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/soluk"
+                    android:textSize="11sp" />
+            </ScrollView>
+
+            <Button
+                android:id="@+id/btnCall"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/btn_anahat"
+                android:enabled="false"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.16"
+                android:text="@string/call_place"
+                android:textColor="@color/txt_anahat"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btnPtt"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_ptt"
+                android:enabled="false"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.18"
+                android:text="@string/ptt_hint"
+                android:textColor="@color/txt_ptt"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+
+        <!-- MODÜL -->
+        <ScrollView
+            android:id="@+id/paneModules"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="28dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/mod_board"
+                android:textColor="@color/lazer"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editBoard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_alan"
+                    android:fontFamily="monospace"
+                    android:hint="@string/mod_board_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences"
+                    android:maxLines="2"
+                    android:minHeight="44dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/metin"
+                    android:textColorHint="@color/soluk"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnBoardPublish"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/btn_kapat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_publish"
+                    android:textColor="@color/lazer"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtBoardOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_panel"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/mod_carrier"
+                android:textColor="@color/lazer"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editCarrier"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_alan"
+                    android:fontFamily="monospace"
+                    android:hint="@string/mod_carrier_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences"
+                    android:maxLines="2"
+                    android:minHeight="44dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/metin"
+                    android:textColorHint="@color/soluk"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnCarrierPost"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/btn_kapat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_post"
+                    android:textColor="@color/lazer"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtCarrierOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_panel"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/mod_show"
+                android:textColor="@color/lazer"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnShowBeacon"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_beacon"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnShowStrobe"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_strobe"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnShowPulse"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_pulse"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnShowAudio"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_audio"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnShowStop"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_stop"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtShowOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_panel"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/mod_vault"
+                android:textColor="@color/lazer"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnVaultUnlock"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_unlock"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnVaultLock"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_lock"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnVaultAdd"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_add"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtVaultOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_panel"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <!-- GPS serit metre: TEK telefon, iki nokta. Hatta bagli degil.
+                 Sonuc buyuk deger + ± bant: olcum panelinin dili. -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.24"
+                android:text="@string/mod_tape"
+                android:textColor="@color/lazer"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnTapePower"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_anahat"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_tape_on"
+                    android:textColor="@color/txt_anahat"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnTapeMark"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1.4"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/btn_lazer"
+                    android:enabled="false"
+                    android:fontFamily="monospace"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/mod_tape_mark_a"
+                    android:textColor="@color/txt_lazer"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Sonuc: A ve B alinmadan gorunmez. Deger buyuk, bant kucuk, altta
+                 serit metre cizgisi - metre yerine ARALIK okunsun. -->
+            <LinearLayout
+                android:id="@+id/rowTapeResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtTapeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.04"
+                    android:textColor="@color/lazer"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:id="@+id/txtTapeBand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/metin"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:fontFamily="monospace"
+                    android:text="@string/mod_tape_rule"
+                    android:textColor="@color/soluk"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtTapeOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_panel"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:text="@string/mod_tape_idle"
+                android:textColor="@color/soluk"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/mod_tape_hint"
+                android:textColor="@color/cizgi"
+                android:textSize="10sp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- MESAJ -->
+        <LinearLayout
+            android:id="@+id/paneChat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <ListView
+                    android:id="@+id/listMessages"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:scrollbars="none"
+                    android:stackFromBottom="true"
+                    android:transcriptMode="normal" />
+
+                <TextView
+                    android:id="@+id/txtEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp"
+                    android:text="@string/chat_empty"
+                    android:textColor="@color/soluk"
+                    android:textSize="14sp" />
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/cizgi" />
+
+            <!-- Aktarim ilerlemesi: yalnizca surerken gorunur -->
+            <LinearLayout
+                android:id="@+id/rowTransfer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtTransfer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="middle"
+                    android:fontFamily="monospace"
+                    android:maxLines="1"
+                    android:textColor="@color/metin"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/btnTransferCancel"
+                    android:layout_width="40dp"
+                    android:layout_height="32dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="@string/photo_cancel"
+                    android:focusable="true"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:text="@string/update_dismiss"
+                    android:textColor="@color/soluk"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="10dp">
+
+                <ImageButton
+                    android:id="@+id/btnPhoto"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/photo_send"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_foto" />
+
+                <EditText
+                    android:id="@+id/editMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_alan"
+                    android:hint="@string/chat_hint"
+                    android:imeOptions="actionSend"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLines="4"
+                    android:minHeight="46dp"
+                    android:paddingStart="14dp"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="11dp"
+                    android:textColor="@color/metin"
+                    android:textColorHint="@color/soluk"
+                    android:textSize="16sp" />
+
+                <ImageButton
+                    android:id="@+id/btnSend"
+                    android:layout_width="52dp"
+                    android:layout_height="46dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/chat_send"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_gonder" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>
+
+    <!-- =========== CAGRI EKRANI ===========
+         Her seyin ustunu kaplar. clickable: altindaki sekmelere dokunus gecmesin. -->
+    <LinearLayout
+        android:id="@+id/paneCall"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/kasa"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="28dp"
+        android:paddingTop="32dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="28dp"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtCallLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.28"
+            android:text="@string/call_incoming"
+            android:textColor="@color/soluk"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtCallPeer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="@color/metin"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/txtCallTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.08"
+            android:textColor="@color/lazer"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/txtCallInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:lineSpacingExtra="3dp"
+            android:textColor="@color/soluk"
+            android:textSize="10sp" />
+
+        <!-- Ses seviyeleri: hattin gercekten ses tasidigini gosterir -->
+        <LinearLayout
+            android:id="@+id/rowMeters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.16"
+                android:text="@string/call_you"
+                android:textColor="@color/soluk"
+                android:textSize="10sp" />
+
+            <com.voyagerroc.laserdeck.ptt.ui.LevelMeter
+                android:id="@+id/meterMic"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:id="@+id/txtMeterPeer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.16"
+                android:maxLines="1"
+                android:textColor="@color/soluk"
+                android:textSize="10sp" />
+
+            <com.voyagerroc.laserdeck.ptt.ui.LevelMeter
+                android:id="@+id/meterRemote"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/rowToggles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btnMute"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_anahat"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.12"
+                android:text="@string/call_mute"
+                android:textColor="@color/txt_anahat"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnSpeaker"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_anahat"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.12"
+                android:text="@string/call_speaker"
+                android:textColor="@color/txt_anahat"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnHangUp"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_kapat"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.16"
+                android:text="@string/call_end"
+                android:textColor="@color/lazer"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnAnswer"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_dolu"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.16"
+                android:text="@string/call_answer"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+    <!-- =========== OLCUM PANELI ===========
+         Radara dokununca acilir. Metre yerine ARALIK gosterir; alan/hacim
+         hesabi BILEREK yok - hata mesafede carpansal oldugu icin alanda
+         kareleniyor ve anlamli bir m2 rakami cikmiyor. -->
+    <LinearLayout
+        android:id="@+id/paneMeasure"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/kasa"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="28dp"
+        android:paddingTop="60dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="28dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.28"
+            android:text="@string/measure_title"
+            android:textColor="@color/soluk"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtMeasureValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.04"
+            android:textColor="@color/lazer"
+            android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/txtMeasureBand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="monospace"
+            android:textColor="@color/metin"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/txtMeasureState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:letterSpacing="0.12"
+            android:textColor="@color/soluk"
+            android:textSize="10sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtMeasureHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="3dp"
+            android:text="@string/measure_hint"
+            android:textColor="@color/cizgi"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/btnMeasureRun"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@drawable/btn_kapat"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.12"
+            android:text="@string/measure_start"
+            android:textColor="@color/lazer"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnMeasureCalibrate"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_anahat"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.1"
+            android:text="@string/measure_calibrate"
+            android:textColor="@color/txt_anahat"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnMeasureClose"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="monospace"
+            android:text="@string/measure_close"
+            android:textColor="@color/soluk"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+
+    <!-- Senkron gosteri: ekranin tamami yanip soner -->
+    <View
+        android:id="@+id/flashOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/metin"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone" />
+
+    <!-- CRT dokusu: %4 opaklikta yatay hatlar, dokunusu engellemez -->
+    <com.voyagerroc.laserdeck.ptt.ui.ScanlineView
+        android:id="@+id/scanlines"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <!-- Acilis dizisi: uygulama acilirken gercek sistem durumunu bildirir -->
+    <ScrollView
+        android:id="@+id/paneBoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/kasa"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingStart="18dp"
+        android:paddingTop="56dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="none">
+
+        <TextView
+            android:id="@+id/txtBoot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="3dp"
+            android:textColor="@color/metin"
+            android:textSize="12sp" />
+    </ScrollView>
+
+</FrameLayout>

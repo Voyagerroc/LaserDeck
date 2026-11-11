@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.LaserDeck" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/kasa</item>
+        <item name="android:statusBarColor">@color/kasa</item>
+        <item name="android:navigationBarColor">@color/kasa</item>
+        <item name="android:colorAccent">@color/lazer</item>
+        <item name="android:textColorPrimary">@color/metin</item>
+        <item name="android:textColorSecondary">@color/soluk</item>
+        <item name="android:textColorHint">@color/soluk</item>
+    </style>
+</resources>

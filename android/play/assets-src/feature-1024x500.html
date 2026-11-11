@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;padding:0;width:1024px;height:500px;overflow:hidden;
+    background:#0B0E14;font-family:"Segoe UI",system-ui,sans-serif}
+  .wrap{position:relative;width:1024px;height:500px;
+    background:radial-gradient(120% 140% at 30% 65%, #131826 0%, #0B0E14 62%)}
+  svg.motif{position:absolute;right:26px;top:50%;transform:translateY(-50%)}
+  svg.beamline{position:absolute;inset:0}
+  .text{position:absolute;left:70px;top:50%;transform:translateY(-50%);max-width:560px}
+  .eyebrow{font-family:Consolas,monospace;font-size:15px;letter-spacing:.2em;
+    color:#8A93A6;margin-bottom:20px;white-space:nowrap}
+  .eyebrow .r{color:#FF2A3C}
+  h1{font-family:Consolas,monospace;font-weight:700;font-size:74px;line-height:1.02;
+    color:#F2EFE8;margin:0 0 22px;letter-spacing:.01em}
+  h1 .ptt{color:#FF2A3C}
+  p{font-size:26px;color:#C9CFDA;margin:0;line-height:1.4}
+</style></head>
+<body>
+<div class="wrap">
+  <svg class="beamline" width="1024" height="500" viewBox="0 0 1024 500">
+    <line x1="-40" y1="560" x2="1080" y2="-60" stroke="#FF2A3C" stroke-width="2" opacity="0.16"/>
+  </svg>
+
+  <div class="text">
+    <div class="eyebrow">SIFIR-INTERNET <span class="r">&#9679;</span> BLUETOOTH <span class="r">&#9679;</span> BAS-KONUS</div>
+    <h1>LASERDECK<br><span class="ptt">PTT</span></h1>
+    <p>İnternetsiz bas-konuş telsizi.<br>Telefondan telefona, şebeke yokken bile.</p>
+  </div>
+
+  <svg class="motif" width="430" height="430" viewBox="0 0 512 512">
+    <defs>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="16"/>
+      </filter>
+    </defs>
+    <circle cx="256" cy="256" r="206" fill="none" stroke="#3A4150" stroke-width="2" stroke-dasharray="4 11"/>
+    <g stroke="#3A4150" stroke-width="3">
+      <line x1="256" y1="34" x2="256" y2="58"/>
+      <line x1="256" y1="454" x2="256" y2="478"/>
+      <line x1="34" y1="256" x2="58" y2="256"/>
+      <line x1="454" y1="256" x2="478" y2="256"/>
+    </g>
+    <line x1="180" y1="332" x2="303" y2="209" stroke="#FF2A3C" stroke-width="64"
+          stroke-linecap="round" opacity="0.28" filter="url(#glow)"/>
+    <line x1="180" y1="332" x2="303" y2="209" stroke="#FF2A3C" stroke-width="33" stroke-linecap="round"/>
+    <circle cx="180" cy="332" r="31" fill="#F2EFE8"/>
+    <path d="M308.6,147.4 A61.6,61.6 0 0 1 365,203.4" fill="none"
+          stroke="#F2EFE8" stroke-width="26" stroke-linecap="round"/>
+    <path d="M311.9,109.5 A99.5,99.5 0 0 1 402.4,200" fill="none"
+          stroke="#F2EFE8" stroke-width="24" stroke-linecap="round"/>
+  </svg>
+</div>
+</body></html>

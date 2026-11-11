@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LaserDeck PTT — Kapalı test erişimi</title>
+<meta name="description" content="LaserDeck PTT kapalı testine katıl ve uygulamayı kur.">
+<style>
+  :root {
+    --kasa: #0B0E14; --kasa3: #0E1220;
+    --lazer: #FF2A3C; --metin: #F2EFE8; --soluk: #8A93A6;
+    --cizgi: #3A4150; --cizgi2: #232A38;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+    --govde: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--kasa); color: var(--metin);
+    font-family: var(--govde); line-height: 1.6;
+    overflow-wrap: break-word;
+  }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 34px 20px 72px; }
+
+  /* --- baslik seridi --- */
+  .ust { display: flex; align-items: center; gap: 13px; margin-bottom: 34px; }
+  .ust svg { flex: none; }
+  .kimlik { flex: 1 1 auto; min-width: 0; }
+  .marka {
+    font-family: var(--mono); font-size: 1.02rem; font-weight: 700;
+    letter-spacing: .13em; line-height: 1.25; margin: 0;
+  }
+  .marka span { color: var(--lazer); }
+  .rozet {
+    font-family: var(--mono); font-size: .66rem; letter-spacing: .16em;
+    color: var(--soluk); text-transform: uppercase; margin: 4px 0 0;
+  }
+
+  /* --- dil secici --- */
+  .dil { flex: none; display: flex; align-items: center; gap: 1px; }
+  .dil button {
+    font-family: var(--mono); font-size: .72rem; font-weight: 700;
+    letter-spacing: .1em; background: none; border: 1px solid var(--cizgi2);
+    color: var(--soluk); padding: 6px 9px; cursor: pointer; line-height: 1;
+  }
+  .dil button:first-child { border-radius: 6px 0 0 6px; }
+  .dil button:last-child { border-radius: 0 6px 6px 0; margin-left: -1px; }
+  .dil button:hover { color: var(--metin); }
+  .dil button[aria-pressed="true"] {
+    color: var(--metin); border-color: var(--cizgi); background: var(--kasa3);
+  }
+
+  h1 {
+    font-family: var(--mono); font-weight: 700;
+    font-size: clamp(1.5rem, 5.9vw, 2.3rem); line-height: 1.14;
+    letter-spacing: -.015em; margin: 0 0 14px; text-wrap: balance;
+  }
+  .giris { color: var(--soluk); margin: 0 0 34px; font-size: 1.02rem; max-width: 47ch; }
+
+  /* --- durum okumasi --- */
+  .durum {
+    background: var(--kasa3); border: 1px solid var(--cizgi2);
+    border-radius: 10px; padding: 14px 17px; margin-bottom: 38px;
+    font-family: var(--mono); font-size: .8rem; line-height: 1.7;
+  }
+  .durum div {
+    display: flex; flex-wrap: wrap; justify-content: space-between;
+    gap: 2px 16px;
+  }
+  .durum div + div {
+    border-top: 1px dashed var(--cizgi2); padding-top: 7px; margin-top: 7px;
+  }
+  .durum dt { color: var(--soluk); letter-spacing: .06em; margin: 0; }
+  .durum dd { margin: 0 0 0 auto; text-align: right; }
+  .iyi { color: var(--metin); }
+  .yok { color: var(--lazer); }
+  .bilinmez { color: var(--soluk); }
+  .nokta {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--lazer); margin-right: 8px; vertical-align: 1px;
+  }
+
+  /* --- adimlar: imza ogesi, durum hatti --- */
+  .adimlar { margin: 0 0 12px; padding: 0; list-style: none; }
+  .adim { position: relative; padding: 0 0 30px 30px; }
+  .adim:last-child { padding-bottom: 0; }
+  /* dikey hat: uygulamadaki mesaj durum cizgisinin aynisi */
+  .adim::before {
+    content: ""; position: absolute; left: 5px; top: 6px; bottom: -6px;
+    width: 2px; background: var(--cizgi2);
+  }
+  .adim:last-child::before { display: none; }
+  .adim::after {
+    content: ""; position: absolute; left: 0; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--cizgi); background: var(--kasa);
+  }
+  .adim.sirada::before, .adim.acik::before {
+    background: repeating-linear-gradient(
+      to bottom, var(--cizgi) 0 4px, transparent 4px 9px);
+  }
+  .adim.acik::after {
+    border-color: var(--lazer); box-shadow: 0 0 0 4px rgba(255, 42, 60, .13);
+  }
+  .adim.tamam::after { border-color: var(--metin); background: var(--metin); }
+  .adim.tamam::before { background: var(--lazer); }
+
+  .adim h2 {
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--soluk); margin: 0 0 6px; font-weight: 600;
+  }
+  .adim.acik h2 { color: var(--lazer); }
+  .adim.tamam h2 { color: var(--metin); }
+  .adim h3 { font-size: 1.1rem; margin: 0 0 8px; font-weight: 600; letter-spacing: -.01em; }
+  .adim p { margin: 0 0 14px; color: var(--soluk); font-size: .95rem; }
+  .adim p:last-child { margin-bottom: 0; }
+  .adim.sirada h3 { opacity: .5; }
+  .adim.sirada > p { opacity: .8; }
+
+  /* --- dugmeler --- */
+  .dugme {
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: .87rem; font-weight: 700;
+    letter-spacing: .05em; text-decoration: none; text-align: center;
+    padding: 15px 18px; border-radius: 8px; border: 1px solid transparent;
+    cursor: pointer; width: 100%;
+  }
+  .birincil { background: var(--lazer); color: #fff; }
+  .birincil:hover { background: #ff3d4d; }
+  .ikincil { background: transparent; color: var(--metin); border-color: var(--cizgi); }
+  .ikincil:hover { border-color: var(--soluk); }
+  .dugme[aria-disabled="true"] {
+    background: transparent; color: var(--soluk); border-color: var(--cizgi2);
+    cursor: not-allowed; pointer-events: none;
+  }
+  .altnot {
+    font-family: var(--mono); font-size: .72rem; color: var(--soluk);
+    margin: 9px 0 0; letter-spacing: .03em; line-height: 1.65;
+  }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--lazer); outline-offset: 3px;
+  }
+
+  /* --- geri alma --- */
+  .geri-sar { margin: 0 0 40px; padding-left: 30px; }
+  .geri {
+    background: none; border: 0; padding: 0; color: var(--soluk);
+    font-family: var(--mono); font-size: .72rem; letter-spacing: .03em;
+    text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+  }
+  .geri:hover { color: var(--metin); }
+
+  /* --- aciklama --- */
+  .sss { border-top: 1px solid var(--cizgi2); padding-top: 30px; }
+  .sss h2 {
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--lazer); margin: 0 0 18px; font-weight: 600;
+  }
+  .sss dt { font-weight: 600; margin-bottom: 5px; }
+  .sss dd { margin: 0 0 18px; color: var(--soluk); font-size: .95rem; }
+  .sss dd:last-of-type { margin-bottom: 0; }
+  .sss a { color: var(--lazer); }
+
+  footer {
+    margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--cizgi2);
+    color: var(--soluk); font-size: .85rem;
+  }
+  footer a { color: var(--soluk); }
+  footer a:hover { color: var(--metin); }
+
+  /* --- radar suprumu: sayfanin tek ortam hareketi --- */
+  #supurme { transform-origin: 24px 24px; animation: donus 4.2s linear infinite; }
+  @keyframes donus { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    #supurme { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="ust">
+    <!-- Mark 48 birimlik kendi uzayinda cizildi: 52px'te cizgi kalinliklari
+         optik olarak dogru okunsun diye, 512'lik cizimden olceklenmedi. -->
+    <svg width="52" height="52" viewBox="0 0 48 48" role="img" aria-labelledby="mark-ad">
+      <title id="mark-ad">LaserDeck PTT</title>
+      <circle cx="24" cy="24" r="19.3" fill="none" stroke="#3A4150"
+              stroke-width="1.4" stroke-dasharray="4 5.2"/>
+      <g id="supurme">
+        <path d="M24 24 L24 4.7" stroke="#FF2A3C" stroke-width="1.4"
+              stroke-linecap="round" opacity=".55"/>
+      </g>
+      <path d="M28.93 13.82 A5.78 5.78 0 0 1 34.22 19.07" fill="none"
+            stroke="#F2EFE8" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M29.24 10.27 A9.33 9.33 0 0 1 37.73 18.75" fill="none"
+            stroke="#F2EFE8" stroke-width="2" stroke-linecap="round"/>
+      <path d="M16.9 31.1 L28.4 19.6" stroke="#FF2A3C" stroke-width="3.3"
+            stroke-linecap="round"/>
+      <circle cx="16.9" cy="31.1" r="2.9" fill="#F2EFE8"/>
+    </svg>
+
+    <div class="kimlik">
+      <p class="marka">LASERDECK <span>PTT</span></p>
+      <p class="rozet" data-t="rozet">Kapalı test &middot; Sürüm 2.1.0</p>
+    </div>
+
+    <div class="dil" role="group" aria-label="Dil / Language">
+      <button type="button" id="dil-tr" aria-pressed="true" lang="tr">TR</button>
+      <button type="button" id="dil-en" aria-pressed="false" lang="en">EN</button>
+    </div>
+  </header>
+
+  <h1 data-t="h1">Uygulamayı kurmadan önce hattı kur.</h1>
+  <p class="giris" data-t="giris">LaserDeck PTT şu an kapalı testte. Google Play
+  üzerinden kurabilmen için önce testçi listesine katılman gerekiyor — bu iki
+  dakikalık tek seferlik bir adım.</p>
+
+  <dl class="durum">
+    <div>
+      <dt><span class="nokta" aria-hidden="true"></span><span data-t="etKanal">Kanal</span></dt>
+      <dd id="d-kanal" class="bilinmez">&mdash;</dd>
+    </div>
+    <div>
+      <dt data-t="etCihaz">Cihaz</dt>
+      <dd id="d-cihaz" class="bilinmez">&mdash;</dd>
+    </div>
+    <div>
+      <dt data-t="etTestci">Testçi durumu</dt>
+      <dd id="d-testci" class="bilinmez">&mdash;</dd>
+    </div>
+  </dl>
+
+  <ol class="adimlar">
+
+    <li class="adim" id="adim1">
+      <h2 id="a1-etiket">Adım 1</h2>
+      <h3 data-t="a1Baslik">Testçi ol</h3>
+      <p id="a1-metin"></p>
+      <a class="dugme birincil" id="a1-dugme" href="#" target="_blank" rel="noopener"></a>
+      <p class="altnot" id="a1-not"></p>
+    </li>
+
+    <li class="adim sirada" id="adim2">
+      <h2 data-t="a2Etiket">Adım 2</h2>
+      <h3 data-t="a2Baslik">Play Store'dan kur</h3>
+      <p data-t="a2Metin"></p>
+      <a class="dugme birincil" id="a2-dugme" href="#" target="_blank" rel="noopener"
+         aria-disabled="true" tabindex="-1"></a>
+      <p class="altnot" data-t="a2Not"></p>
+    </li>
+
+    <li class="adim sirada" id="adim3">
+      <h2 id="a3-etiket">Adım 3 &middot; yedek yol</h2>
+      <h3 data-t="a3Baslik">APK'yı doğrudan indir</h3>
+      <p data-t="a3Metin"></p>
+      <a class="dugme ikincil" id="a3-dugme" href="laserdeck-ptt-2.1.0.apk" download
+         aria-disabled="true" tabindex="-1"></a>
+      <p class="altnot" data-t="a3Not"></p>
+    </li>
+
+  </ol>
+
+  <p class="geri-sar" id="geri-sar" hidden>
+    <button type="button" class="geri" id="sifirla" data-t="sifirla">Adımları sıfırla</button>
+  </p>
+
+  <section class="sss">
+    <h2 data-t="sssBaslik">Sık sorulanlar</h2>
+    <dl>
+      <dt data-t="s1s"></dt>
+      <dd data-t="s1c"></dd>
+      <dt data-t="s2s"></dt>
+      <dd data-t="s2c"></dd>
+      <dt data-t="s3s"></dt>
+      <dd data-t="s3c"></dd>
+      <dt data-t="s4s"></dt>
+      <dd data-t="s4c"></dd>
+    </dl>
+  </section>
+
+  <footer>
+    <a href="/" data-t="footGeri"></a><br><br>
+    <span data-t="footSorun"></span>
+    <a href="mailto:tascierol24@gmail.com">tascierol24@gmail.com</a>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Kapalı test Google incelemesinden geçip yayına alındığında bunu true yap.
+     false iken Adım 1 ve 2 kapalı kalır, APK yolu tek seçenek olarak açılır. */
+  var TEST_ACIK = false;
+
+  var PAKET  = "com.voyagerroc.laserdeck.ptt";
+  var KATIL  = "https://play.google.com/apps/testing/" + PAKET;
+  var MAGAZA = "https://play.google.com/store/apps/details?id=" + PAKET;
+
+  var A_KATILDI = "laserdeck.testci.katildi";
+  var A_DIL     = "laserdeck.dil";
+
+  /* Metinlerin tamamı burada. Değerler bu dosyanın kendi yazdığı sabitlerdir;
+     dışarıdan girdi almadığı için sınırlı HTML (strong/br) güvenle kullanılır. */
+  var METIN = {
+    tr: {
+      title:     "LaserDeck PTT — Kapalı test erişimi",
+      aciklama:  "LaserDeck PTT kapalı testine katıl ve uygulamayı kur.",
+      rozet:     "Kapalı test &middot; Sürüm 2.1.0",
+      h1:        "Uygulamayı kurmadan<br>önce hattı kur.",
+      giris:     "LaserDeck PTT şu an kapalı testte. Google Play üzerinden kurabilmen için önce testçi listesine katılman gerekiyor — bu iki dakikalık tek seferlik bir adım.",
+
+      etKanal:   "Kanal",
+      etCihaz:   "Cihaz",
+      etTestci:  "Testçi durumu",
+      kanalAcik: "kapalı test açık",
+      kanalKapali: "test incelemede",
+      cihazAndroid: "Android",
+      cihazIos:  "iOS — desteklenmiyor",
+      cihazMasa: "masaüstü — telefonda aç",
+      tAcilmadi: "test henüz açılmadı",
+      tKatildi:  "katıldım olarak işaretli",
+      tBilinmez: "bilinmiyor — Adım 1",
+
+      a1Etiket:  "Adım 1",
+      a1Baslik:  "Testçi ol",
+      a1Metin:   "Düğme seni Google Play'in kendi katılım sayfasına götürür. Orada <strong>Become a tester</strong> yazıyorsa listede değilsindir — düğmeye bastığında katılırsın. <strong>You're a tester</strong> yazıyorsa zaten katılmışsındır.",
+      a1MetinKapali: "Kapalı test sürümü Google incelemesinde. İnceleme bitip test açıldığında katılım sayfası burada etkinleşecek.",
+      a1Dugme:   "TESTÇİ OL →",
+      a1DugmeKapali: "TESTÇİ OL — HENÜZ AÇIK DEĞİL",
+      a1DugmeTekrar: "KATILIM SAYFASINI YENİDEN AÇ",
+      a1Not:     "Google hesabıyla giriş ister. Listede olmayan hesaplar uygulamayı Play'de göremez.",
+      a1NotKapali: "İnceleme genelde 1–7 gün sürer.",
+
+      a2Etiket:  "Adım 2",
+      a2Baslik:  "Play Store'dan kur",
+      a2Metin:   "Katıldıktan sonra uygulama senin hesabında Play Store'da görünür. Güncellemeler kendiliğinden gelir.",
+      a2Dugme:   "PLAY STORE'DAN KUR",
+      a2DugmeKapali: "PLAY STORE'DAN KUR — HENÜZ AÇIK DEĞİL",
+      a2Not:     "Katılımın Play'e işlemesi birkaç dakika sürebilir.",
+
+      a3Etiket:  "Adım 3 &middot; yedek yol",
+      a3EtiketTek: "Şimdilik tek yol",
+      a3Baslik:  "APK'yı doğrudan indir",
+      a3Metin:   "Play beklemek istemiyorsan kurulum dosyasını doğrudan indirebilirsin. Bu yolda güncellemeleri uygulama kendisi haber verir.",
+      a3Dugme:   "APK İNDİR &middot; 1,2 MB",
+      a3Not:     "Android “bilinmeyen kaynak” uyarısı verirse tarayıcına kurulum izni ver — mağaza dışı kurulumda normaldir.",
+
+      sifirla:   "Adımları sıfırla",
+
+      sssBaslik: "Sık sorulanlar",
+      s1s: "Testçi olmak ne demek?",
+      s1c: "Uygulama henüz herkese açık değil. Google, yayına çıkmadan önce sınırlı bir grubun uygulamayı kullanmasını istiyor. Testçi olmak yalnızca “uygulamayı Play üzerinden kurabil” demek — para ya da taahhüt yok, istediğin an ayrılırsın.",
+      s2s: "Testçi olduğumu buradan göremiyor musun?",
+      s2c: "Hayır. Bunu yalnızca Google bilir; bu sayfa senin Play hesabını göremez. Kesin cevap Adım 1'deki sayfada yazar.",
+      s3s: "Neden iki telefon gerekiyor?",
+      s3c: "LaserDeck bir telsiz: ses iki telefon arasında doğrudan Bluetooth ile gidip gelir. Tek telefonda arayüzü gezebilirsin ama konuşabilmek için karşı tarafta da uygulamanın kurulu olması gerekir.",
+      s4s: "Verilerim nereye gidiyor?",
+      s4c: "Hiçbir yere. Sunucu yok, hesap yok, internet yok. Ses ve mesajlar telefondan telefona gider. <a href=\"privacy-policy\">Gizlilik politikası</a>",
+
+      footGeri:  "← Uygulama sayfasına dön",
+      footSorun: "Sorun mu var?"
+    },
+
+    en: {
+      title:     "LaserDeck PTT — Closed test access",
+      aciklama:  "Join the LaserDeck PTT closed test and install the app.",
+      rozet:     "Closed test &middot; Version 2.1.0",
+      h1:        "Open the channel<br>before you install.",
+      giris:     "LaserDeck PTT is in closed testing. To install it from Google Play you first need to join the tester list — a one-time step that takes about two minutes.",
+
+      etKanal:   "Channel",
+      etCihaz:   "Device",
+      etTestci:  "Tester status",
+      kanalAcik: "closed test open",
+      kanalKapali: "test in review",
+      cihazAndroid: "Android",
+      cihazIos:  "iOS — not supported",
+      cihazMasa: "desktop — open this on your phone",
+      tAcilmadi: "test not open yet",
+      tKatildi:  "marked as joined",
+      tBilinmez: "unknown — see step 1",
+
+      a1Etiket:  "Step 1",
+      a1Baslik:  "Join the test",
+      a1Metin:   "The button opens Google Play's own opt-in page. If it says <strong>Become a tester</strong>, you're not on the list yet — tapping it joins you. If it says <strong>You're a tester</strong>, you've already joined.",
+      a1MetinKapali: "The closed test build is in review at Google. The opt-in page will become active here once the review is done and the test opens.",
+      a1Dugme:   "JOIN THE TEST →",
+      a1DugmeKapali: "JOIN THE TEST — NOT OPEN YET",
+      a1DugmeTekrar: "OPEN THE OPT-IN PAGE AGAIN",
+      a1Not:     "Requires a Google account. Accounts that aren't on the list won't see the app on Play.",
+      a1NotKapali: "Review usually takes 1–7 days.",
+
+      a2Etiket:  "Step 2",
+      a2Baslik:  "Install from Play Store",
+      a2Metin:   "Once you've joined, the app shows up in the Play Store for your account. Updates arrive on their own.",
+      a2Dugme:   "INSTALL FROM PLAY STORE",
+      a2DugmeKapali: "INSTALL FROM PLAY STORE — NOT OPEN YET",
+      a2Not:     "It can take a few minutes for Play to register your opt-in.",
+
+      a3Etiket:  "Step 3 &middot; fallback",
+      a3EtiketTek: "The only route for now",
+      a3Baslik:  "Download the APK directly",
+      a3Metin:   "If you would rather not wait for Play, download the installer directly. On this route the app tells you about updates itself.",
+      a3Dugme:   "DOWNLOAD APK &middot; 1.2 MB",
+      a3Not:     "If Android warns about an “unknown source”, grant your browser permission to install — that is normal outside the store.",
+
+      sifirla:   "Reset steps",
+
+      sssBaslik: "Common questions",
+      s1s: "What does being a tester mean?",
+      s1c: "The app is not public yet. Google wants a limited group using it before release. Being a tester only means you can install it from Play — no cost, no commitment, and you can leave whenever you like.",
+      s2s: "Can this page tell whether I am a tester?",
+      s2c: "No. Only Google knows that; this page cannot see your Play account. The definitive answer is on the page in step 1.",
+      s3s: "Why do I need two phones?",
+      s3c: "LaserDeck is a two-way radio: audio travels directly between two phones over Bluetooth. You can explore the interface on one phone, but talking needs the app installed on the other end too.",
+      s4s: "Where does my data go?",
+      s4c: "Nowhere. No server, no account, no internet. Audio and messages go phone to phone. <a href=\"privacy-policy\">Privacy policy</a>",
+
+      footGeri:  "← Back to the app page",
+      footSorun: "Something wrong?"
+    }
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var dil = "tr";
+
+  /* --- yerel hafiza: bazi tarayicilarda erisim hata firlatir --- */
+  function hafizaOku(anahtar) {
+    try { return localStorage.getItem(anahtar); } catch (e) { return null; }
+  }
+  function hafizaYaz(anahtar, deger) {
+    try {
+      if (deger === null) { localStorage.removeItem(anahtar); }
+      else { localStorage.setItem(anahtar, deger); }
+    } catch (e) { /* hafizasiz da calisir */ }
+  }
+
+  function katildiMi() { return hafizaOku(A_KATILDI) === "1"; }
+
+  function dilSec() {
+    var kayitli = hafizaOku(A_DIL);
+    if (kayitli === "tr" || kayitli === "en") { return kayitli; }
+    var tarayici = (navigator.language || "en").toLowerCase();
+    return tarayici.indexOf("tr") === 0 ? "tr" : "en";
+  }
+
+  /* --- cihaz okumasi: gercekten olcebildigimiz seyler --- */
+  function cihazOku() {
+    var ua = navigator.userAgent || "";
+    var s = METIN[dil];
+    var surum = ua.match(/Android\s+([\d.]+)/);
+    if (/Android/i.test(ua)) {
+      return { uygun: true, metin: s.cihazAndroid + (surum ? " " + surum[1] : "") };
+    }
+    if (/iPhone|iPad|iPod/i.test(ua)) { return { uygun: false, metin: s.cihazIos }; }
+    return { uygun: false, metin: s.cihazMasa };
+  }
+
+  function adimDurum(el, durum) {
+    el.classList.remove("sirada", "acik", "tamam");
+    el.classList.add(durum);
+  }
+  function dugmeAc(el, yazi, adres) {
+    el.removeAttribute("aria-disabled");
+    el.removeAttribute("tabindex");
+    el.innerHTML = yazi;
+    if (adres) { el.setAttribute("href", adres); }
+  }
+  /* Kilitli baglanti fareyle tiklanamaz ama klavyeyle hala odaklanabilir;
+     tabindex -1 olmadan Enter bosa "#" adresine atlar. */
+  function dugmeKilitle(el, yazi) {
+    el.setAttribute("aria-disabled", "true");
+    el.setAttribute("tabindex", "-1");
+    el.innerHTML = yazi;
+  }
+
+  function ciz() {
+    var s = METIN[dil];
+    var katildi = katildiMi();
+    var cihaz = cihazOku();
+
+    /* --- sabit metinler --- */
+    document.documentElement.lang = dil;
+    document.title = s.title;
+    var aciklamaEt = document.querySelector('meta[name="description"]');
+    if (aciklamaEt) { aciklamaEt.setAttribute("content", s.aciklama); }
+
+    var alanlar = document.querySelectorAll("[data-t]");
+    for (var i = 0; i < alanlar.length; i++) {
+      var anahtar = alanlar[i].getAttribute("data-t");
+      if (s[anahtar] !== undefined) { alanlar[i].innerHTML = s[anahtar]; }
+    }
+
+    $("dil-tr").setAttribute("aria-pressed", dil === "tr" ? "true" : "false");
+    $("dil-en").setAttribute("aria-pressed", dil === "en" ? "true" : "false");
+
+    /* --- durum paneli --- */
+    $("d-kanal").innerHTML = TEST_ACIK ? s.kanalAcik : s.kanalKapali;
+    $("d-kanal").className = TEST_ACIK ? "iyi" : "yok";
+
+    $("d-cihaz").textContent = cihaz.metin;
+    $("d-cihaz").className = cihaz.uygun ? "iyi" : "yok";
+
+    if (!TEST_ACIK) {
+      $("d-testci").textContent = s.tAcilmadi;
+      $("d-testci").className = "bilinmez";
+    } else if (katildi) {
+      $("d-testci").textContent = s.tKatildi;
+      $("d-testci").className = "iyi";
+    } else {
+      $("d-testci").textContent = s.tBilinmez;
+      $("d-testci").className = "bilinmez";
+    }
+
+    /* --- test henuz acilmadi: APK tek yol --- */
+    if (!TEST_ACIK) {
+      $("a1-etiket").innerHTML = s.a1Etiket;
+      adimDurum($("adim1"), "sirada");
+      $("a1-metin").innerHTML = s.a1MetinKapali;
+      dugmeKilitle($("a1-dugme"), s.a1DugmeKapali);
+      $("a1-not").innerHTML = s.a1NotKapali;
+
+      adimDurum($("adim2"), "sirada");
+      dugmeKilitle($("a2-dugme"), s.a2DugmeKapali);
+
+      adimDurum($("adim3"), "acik");
+      $("a3-etiket").innerHTML = s.a3EtiketTek;
+      dugmeAc($("a3-dugme"), s.a3Dugme);
+      $("geri-sar").hidden = true;
+      return;
+    }
+
+    /* --- test acik --- */
+    $("a1-etiket").innerHTML = s.a1Etiket;
+    $("a1-metin").innerHTML = s.a1Metin;
+    $("a1-not").innerHTML = s.a1Not;
+    $("a3-etiket").innerHTML = s.a3Etiket;
+
+    if (katildi) {
+      adimDurum($("adim1"), "tamam");
+      adimDurum($("adim2"), "acik");
+      adimDurum($("adim3"), "acik");
+      $("a1-dugme").className = "dugme ikincil";
+      dugmeAc($("a1-dugme"), s.a1DugmeTekrar, KATIL);
+      dugmeAc($("a2-dugme"), s.a2Dugme, MAGAZA);
+      dugmeAc($("a3-dugme"), s.a3Dugme);
+      $("geri-sar").hidden = false;
+    } else {
+      adimDurum($("adim1"), "acik");
+      adimDurum($("adim2"), "sirada");
+      adimDurum($("adim3"), "sirada");
+      $("a1-dugme").className = "dugme birincil";
+      dugmeAc($("a1-dugme"), s.a1Dugme, KATIL);
+      dugmeKilitle($("a2-dugme"), s.a2Dugme);
+      dugmeKilitle($("a3-dugme"), s.a3Dugme);
+      $("geri-sar").hidden = true;
+    }
+  }
+
+  function dilDegistir(yeni) {
+    dil = yeni;
+    hafizaYaz(A_DIL, yeni);
+    ciz();
+  }
+
+  /* Adim 1'e basmak hatti kurar: sonraki adimlar acilir. */
+  $("a1-dugme").addEventListener("click", function () {
+    if (this.getAttribute("aria-disabled") === "true") { return; }
+    hafizaYaz(A_KATILDI, "1");
+    setTimeout(ciz, 400);
+  });
+
+  $("sifirla").addEventListener("click", function () {
+    hafizaYaz(A_KATILDI, null);
+    ciz();
+  });
+
+  $("dil-tr").addEventListener("click", function () { dilDegistir("tr"); });
+  $("dil-en").addEventListener("click", function () { dilDegistir("en"); });
+
+  dil = dilSec();
+  ciz();
+})();
+</script>
+</body>
+</html>

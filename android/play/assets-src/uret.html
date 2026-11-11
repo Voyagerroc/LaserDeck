@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>LaserDeck PTT — mağaza görseli üretici</title>
+<!--
+  Play Console görselleri buradan üretilir. Renkler ve metinler uygulamanın
+  kendi kaynaklarından alınmıştır (res/values/colors.xml, strings.xml) —
+  mağaza görseli ile gerçek arayüz birbirinden ayrı düşmesin diye.
+
+  Kullanım (headless Chrome):
+    ?kare=1&dil=tr   → 1080x1920 ekran görüntüsü
+    ?kare=one&dil=en → 1024x500  öne çıkan görsel
+-->
+<style>
+  /* uygulamanin kendi paleti */
+  :root {
+    --kasa: #0B0E14; --panel: #131826; --alan: #1A2030;
+    --lazer: #FF2A3C; --metin: #F2EFE8; --soluk: #8A93A6; --cizgi: #262D3B;
+    --mono: "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+    --govde: "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; }
+
+  .kare {
+    width: 1080px; height: 1920px; background: var(--kasa);
+    display: none; flex-direction: column; overflow: hidden; position: relative;
+  }
+  .kare.acik { display: flex; }
+
+  /* --- ust yazi bandi --- */
+  .band { padding: 96px 76px 60px; flex: none; }
+  .band .etiket {
+    font-family: var(--mono); font-size: 26px; letter-spacing: .34em;
+    color: var(--lazer); text-transform: uppercase; margin-bottom: 26px;
+  }
+  .band h2 {
+    font-family: var(--mono); font-size: 68px; line-height: 1.16;
+    color: var(--metin); font-weight: 700; letter-spacing: -.01em;
+  }
+  .band p {
+    font-family: var(--govde); font-size: 31px; line-height: 1.5;
+    color: var(--soluk); margin-top: 24px; max-width: 20ch;
+  }
+
+  /* --- telefon govdesi --- */
+  .cihaz {
+    flex: 1 1 auto; margin: 0 62px 74px; background: var(--kasa);
+    border: 2px solid var(--cizgi); border-radius: 26px;
+    display: flex; flex-direction: column; overflow: hidden; position: relative;
+  }
+  /* tarama cizgileri: uygulamadaki terminal dokusu */
+  .cihaz::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom, rgba(255,255,255,.021) 0 2px, transparent 2px 5px);
+  }
+
+  .hat {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 26px 30px; border-bottom: 1px solid var(--cizgi);
+    font-family: var(--mono); font-size: 25px; color: var(--soluk);
+    letter-spacing: .1em; flex: none;
+  }
+  .hat b { color: var(--lazer); font-weight: 700; }
+  .hat .canli { color: var(--metin); }
+
+  .sekmeler {
+    display: flex; border-bottom: 1px solid var(--cizgi); flex: none;
+  }
+  .sekmeler div {
+    flex: 1; text-align: center; padding: 24px 0;
+    font-family: var(--mono); font-size: 25px; letter-spacing: .2em;
+    color: var(--soluk);
+  }
+  .sekmeler div.sec { color: var(--lazer); box-shadow: inset 0 -3px 0 var(--lazer); }
+
+  .govde { flex: 1 1 auto; padding: 30px; overflow: hidden; }
+
+  .kutucuk {
+    border: 1px solid var(--cizgi); border-radius: 10px;
+    padding: 22px 24px; margin-bottom: 22px;
+  }
+  .basliketiket {
+    font-family: var(--mono); font-size: 21px; letter-spacing: .22em;
+    color: var(--soluk); margin-bottom: 14px;
+  }
+  .deger { font-family: var(--mono); font-size: 29px; color: var(--metin); }
+
+  .komutlar { display: flex; gap: 16px; margin-bottom: 26px; }
+  .komut {
+    flex: 1; text-align: center; padding: 22px 6px;
+    border: 1px solid var(--cizgi); border-radius: 10px;
+    font-family: var(--mono); font-size: 24px; color: var(--soluk);
+    letter-spacing: .06em;
+  }
+  .komut.etkin { color: var(--lazer); border-color: var(--lazer); }
+
+  .gunluk { font-family: var(--mono); font-size: 23px; line-height: 1.95; }
+  .gunluk div { color: var(--soluk); }
+  .gunluk .tx { color: var(--lazer); }
+  .gunluk .ok { color: var(--metin); }
+  .nokta-ayrac {
+    border-top: 1px dotted var(--cizgi); margin: 22px 0;
+  }
+
+  /* bas-konus dugmesi */
+  .ptt {
+    margin: auto 30px 30px; height: 430px; border-radius: 18px;
+    border: 2px solid var(--lazer); background: rgba(255,42,60,.09);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; flex: none;
+  }
+  .ptt .buyuk {
+    font-family: var(--mono); font-size: 62px; font-weight: 700;
+    color: var(--lazer); letter-spacing: .12em;
+  }
+  .ptt .alt {
+    font-family: var(--mono); font-size: 24px; color: var(--soluk);
+    letter-spacing: .16em;
+  }
+  .seviye { display: flex; gap: 7px; align-items: flex-end; height: 66px; }
+  .seviye i { width: 11px; background: var(--lazer); border-radius: 2px; display: block; }
+
+  /* mesaj balonlari */
+  .mesaj { display: flex; gap: 16px; margin-bottom: 26px; }
+  .mesaj .cizgi { width: 4px; border-radius: 2px; flex: none; }
+  .mesaj .govdem { flex: 1; }
+  .mesaj .yazi {
+    font-family: var(--govde); font-size: 29px; color: var(--metin); line-height: 1.45;
+  }
+  .mesaj .durumx {
+    font-family: var(--mono); font-size: 19px; letter-spacing: .18em;
+    color: var(--soluk); margin-top: 9px;
+  }
+  .m-kuyruk .cizgi { background: repeating-linear-gradient(
+      to bottom, var(--soluk) 0 8px, transparent 8px 16px); }
+  .m-gonderildi .cizgi { background: var(--soluk); opacity: .55; }
+  .m-teslim .cizgi { background: var(--lazer); }
+  .m-gelen { flex-direction: row-reverse; text-align: right; }
+  .m-gelen .cizgi { background: var(--cizgi); }
+
+  .yazma {
+    display: flex; align-items: center; gap: 16px; margin: auto 0 0;
+    border: 1px solid var(--cizgi); border-radius: 12px; padding: 22px 24px;
+    font-family: var(--govde); font-size: 27px; color: var(--soluk);
+  }
+  .yazma span:last-child { color: var(--lazer); font-family: var(--mono); letter-spacing: .1em; }
+
+  /* cagri ekrani */
+  .cagri { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 70px 40px; }
+  .cagri .kim { font-family: var(--mono); font-size: 27px; letter-spacing: .3em; color: var(--soluk); }
+  .cagri .ad { font-family: var(--mono); font-size: 56px; color: var(--metin); margin: 22px 0 14px; }
+  .cagri .sure { font-family: var(--mono); font-size: 40px; color: var(--lazer); letter-spacing: .1em; }
+  .cagri .dsp {
+    margin-top: 54px; border: 1px solid var(--cizgi); border-radius: 10px;
+    padding: 22px 26px; font-family: var(--mono); font-size: 22px;
+    color: var(--soluk); line-height: 1.9; text-align: center; letter-spacing: .06em;
+  }
+  .cagri .dsp b { color: var(--metin); font-weight: 400; }
+  .cagri .tuslar { display: flex; gap: 20px; margin-top: auto; width: 100%; }
+  .cagri .tus {
+    flex: 1; text-align: center; padding: 30px 0; border-radius: 12px;
+    border: 1px solid var(--cizgi); font-family: var(--mono); font-size: 24px;
+    color: var(--soluk); letter-spacing: .1em;
+  }
+  .cagri .tus.kirmizi { border-color: var(--lazer); color: var(--lazer); }
+
+  /* radar */
+  .radar { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 46px 40px; }
+  .radar svg { display: block; }
+  .radar .aralik {
+    font-family: var(--mono); font-size: 64px; color: var(--metin);
+    letter-spacing: .04em; margin-top: 30px;
+  }
+  .radar .trend {
+    font-family: var(--mono); font-size: 30px; color: var(--lazer);
+    letter-spacing: .18em; margin-top: 14px;
+  }
+  .radar .not {
+    font-family: var(--mono); font-size: 21px; color: var(--soluk);
+    line-height: 1.85; margin-top: auto; text-align: center; letter-spacing: .04em;
+  }
+
+  /* --- one cikan gorsel --- */
+  .one {
+    width: 1024px; height: 500px; background: var(--kasa);
+    display: none; position: relative; overflow: hidden;
+  }
+  .one.acik { display: block; }
+  .one .ic { position: absolute; inset: 0; padding: 62px 70px; }
+  .one .kicik {
+    font-family: var(--mono); font-size: 15px; letter-spacing: .28em;
+    color: var(--soluk); text-transform: uppercase;
+  }
+  .one .kicik i { color: var(--lazer); font-style: normal; }
+  .one h3 {
+    font-family: var(--mono); font-size: 66px; font-weight: 700;
+    color: var(--metin); letter-spacing: -.01em; line-height: 1.04; margin: 26px 0 0;
+  }
+  .one h3 em { color: var(--lazer); font-style: normal; }
+  .one p {
+    font-family: var(--govde); font-size: 24px; color: var(--soluk);
+    line-height: 1.5; margin-top: 24px; max-width: 30ch;
+  }
+  .one .mark { position: absolute; right: 58px; top: 50%; transform: translateY(-50%); }
+</style>
+</head>
+<body>
+
+<!-- ==================== EKRAN 1 · TELSİZ ==================== -->
+<div class="kare" id="k1">
+  <div class="band">
+    <div class="etiket" data-b="e1etiket">Bas-konuş</div>
+    <h2 data-b="e1baslik">Şebeke yokken<br>konuşmaya devam.</h2>
+    <p data-b="e1alt">Ses iki telefon arasında doğrudan Bluetooth ile gider.</p>
+  </div>
+  <div class="cihaz">
+    <div class="hat">
+      <span data-t="hatEtiket">HAT</span>
+      <span><b>●</b> <span class="canli" data-t="hatBagli">BAĞLI · Galaxy A54</span></span>
+    </div>
+    <div class="sekmeler">
+      <div class="sec" data-t="sekTelsiz">TELSİZ</div>
+      <div data-t="sekMesaj">MESAJ</div>
+      <div data-t="sekModul">MODÜL</div>
+    </div>
+    <div class="govde" style="display:flex;flex-direction:column;padding-bottom:0">
+      <div class="kutucuk">
+        <div class="basliketiket" data-t="etCihaz">EŞLEŞMİŞ CİHAZ</div>
+        <div class="deger">Galaxy A54 · 5C:3A:45:B2:11:9E</div>
+      </div>
+      <div class="komutlar">
+        <div class="komut" data-t="kBekle">[ BEKLE ]</div>
+        <div class="komut etkin" data-t="kKes">[ KES ]</div>
+        <div class="komut" data-t="kAra">[ ARA ]</div>
+      </div>
+      <div class="basliketiket" data-t="etGunluk">SİSTEM GÜNLÜĞÜ</div>
+      <div class="gunluk">
+        <div class="ok" data-t="g1">taşıyıcı · AÇIK</div>
+        <div class="tx" data-t="g2">TX konuşma başladı · codec AMR-WB 16 kHz</div>
+        <div data-t="g3">RX karşı taraf sustu</div>
+        <div class="ok" data-t="g4">PONG alındı · seq 12 · 41 ms</div>
+      </div>
+    </div>
+    <div class="ptt">
+      <div class="seviye" id="sev1"></div>
+      <div class="buyuk" data-t="pttCanli">YAYINDASIN</div>
+      <div class="alt" data-t="pttAlt">BASILI TUT</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== EKRAN 2 · MESAJ ==================== -->
+<div class="kare" id="k2">
+  <div class="band">
+    <div class="etiket" data-b="e2etiket">Mesajlaşma</div>
+    <h2 data-b="e2baslik">Hat koptu diye<br>mesaj kaybolmaz.</h2>
+    <p data-b="e2alt">Kuyrukta bekler, hat dönünce kendiliğinden gider.</p>
+  </div>
+  <div class="cihaz">
+    <div class="hat">
+      <span data-t="hatEtiket">HAT</span>
+      <span><b>●</b> <span class="canli" data-t="hatBagli">BAĞLI · Galaxy A54</span></span>
+    </div>
+    <div class="sekmeler">
+      <div data-t="sekTelsiz">TELSİZ</div>
+      <div class="sec" data-t="sekMesaj">MESAJ</div>
+      <div data-t="sekModul">MODÜL</div>
+    </div>
+    <div class="govde" style="display:flex;flex-direction:column">
+      <div class="mesaj m-teslim">
+        <div class="cizgi"></div>
+        <div class="govdem">
+          <div class="yazi" data-t="m1">Tepedeyim, kamp yerini görüyorum.</div>
+          <div class="durumx" data-t="dTeslim">TESLİM</div>
+        </div>
+      </div>
+      <div class="mesaj m-gelen">
+        <div class="cizgi"></div>
+        <div class="govdem">
+          <div class="yazi" data-t="m2">Anlaşıldı. Dereden mi geliyorsun?</div>
+        </div>
+      </div>
+      <div class="mesaj m-gonderildi">
+        <div class="cizgi"></div>
+        <div class="govdem">
+          <div class="yazi" data-t="m3">Evet, yirmi dakika sürer.</div>
+          <div class="durumx" data-t="dGonderildi">GÖNDERİLDİ</div>
+        </div>
+      </div>
+      <div class="mesaj m-kuyruk">
+        <div class="cizgi"></div>
+        <div class="govdem">
+          <div class="yazi" data-t="m4">Sırtımda telsiz var, sesi açık bırak.</div>
+          <div class="durumx" data-t="dKuyruk">KUYRUKTA · HAT DÖNÜNCE GİDECEK</div>
+        </div>
+      </div>
+      <div class="yazma">
+        <span data-t="yazHint">mesaj yaz…</span>
+        <span style="margin-left:auto" data-t="yazGonder">[ GÖNDER ]</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== EKRAN 3 · ÇAĞRI ==================== -->
+<div class="kare" id="k3">
+  <div class="band">
+    <div class="etiket" data-b="e3etiket">Sesli arama</div>
+    <h2 data-b="e3baslik">Çift yönlü görüşme,<br>telefon hattı olmadan.</h2>
+    <p data-b="e3alt">Telefonun kendi yankı gidericisi ve gürültü bastırması devrede.</p>
+  </div>
+  <div class="cihaz">
+    <div class="hat">
+      <span data-t="hatEtiket">HAT</span>
+      <span><b>●</b> <span class="canli" data-t="hatGorusme">GÖRÜŞME</span></span>
+    </div>
+    <div class="cagri">
+      <div class="kim" data-t="cKim">KARŞI TARAF</div>
+      <div class="ad">Galaxy A54</div>
+      <div class="sure">04:17</div>
+      <div class="dsp">
+        <div data-t="cBant"><b>GENİŞ BANT 16 kHz</b></div>
+        <div data-t="cDsp">YANKI + GÜRÜLTÜ BASTIRMA AÇIK</div>
+        <div data-t="cYol">SES YOLU · AHİZE</div>
+      </div>
+      <div class="tuslar">
+        <div class="tus" data-t="cSessiz">SESSİZ</div>
+        <div class="tus" data-t="cHoparlor">HOPARLÖR</div>
+        <div class="tus kirmizi" data-t="cKapat">KAPAT</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== EKRAN 4 · RADAR ==================== -->
+<div class="kare" id="k4">
+  <div class="band">
+    <div class="etiket" data-b="e4etiket">Radar</div>
+    <h2 data-b="e4baslik">Karşı taraf<br>ne kadar uzakta?</h2>
+    <p data-b="e4alt">Sinyal gücünden kaba mesafe kestirimi — nokta değil, halka.</p>
+  </div>
+  <div class="cihaz">
+    <div class="hat">
+      <span data-t="hatEtiket">HAT</span>
+      <span><b>●</b> <span class="canli" data-t="hatBagli">BAĞLI · Galaxy A54</span></span>
+    </div>
+    <div class="radar">
+      <svg width="620" height="620" viewBox="0 0 620 620">
+        <circle cx="310" cy="310" r="292" fill="none" stroke="#262D3B" stroke-width="2"/>
+        <circle cx="310" cy="310" r="216" fill="none" stroke="#262D3B" stroke-width="2"/>
+        <circle cx="310" cy="310" r="140" fill="none" stroke="#262D3B" stroke-width="2"/>
+        <circle cx="310" cy="310" r="64"  fill="none" stroke="#262D3B" stroke-width="2"/>
+        <line x1="310" y1="18" x2="310" y2="602" stroke="#262D3B" stroke-width="2"/>
+        <line x1="18" y1="310" x2="602" y2="310" stroke="#262D3B" stroke-width="2"/>
+        <!-- belirsizlik halkasi: kalinlik = hata payi -->
+        <circle cx="310" cy="310" r="180" fill="none" stroke="#FF2A3C"
+                stroke-width="46" opacity=".2"/>
+        <circle cx="310" cy="310" r="180" fill="none" stroke="#FF2A3C" stroke-width="3"/>
+        <circle cx="310" cy="310" r="13" fill="#F2EFE8"/>
+      </svg>
+      <div class="aralik">8 – 14 m</div>
+      <div class="trend" data-t="rTrend">▼ YAKLAŞIYOR</div>
+      <div class="not" data-t="rNot">// yön tek antenle ölçülemez<br>// hedef nokta değil halkadır</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ÖNE ÇIKAN GÖRSEL ==================== -->
+<div class="one" id="one">
+  <div class="ic">
+    <div class="kicik" data-b="oEtiket">SIFIR İNTERNET <i>●</i> BLUETOOTH <i>●</i> BAS-KONUŞ</div>
+    <h3>LASERDECK<br><em>PTT</em></h3>
+    <p data-b="oAlt">Telsiz, mesaj, sesli arama ve radar — hepsi iki telefon arasında,
+    şebeke yokken bile.</p>
+  </div>
+  <svg class="mark" width="300" height="300" viewBox="0 0 512 512" aria-hidden="true">
+    <defs><filter id="par" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16"/></filter></defs>
+    <circle cx="256" cy="256" r="206" fill="none" stroke="#3A4150"
+            stroke-width="3" stroke-dasharray="6 16"/>
+    <line x1="180" y1="332" x2="303" y2="209" stroke="#FF2A3C" stroke-width="64"
+          stroke-linecap="round" opacity=".3" filter="url(#par)"/>
+    <line x1="180" y1="332" x2="303" y2="209" stroke="#FF2A3C" stroke-width="33"
+          stroke-linecap="round"/>
+    <circle cx="180" cy="332" r="31" fill="#F2EFE8"/>
+    <path d="M308.6,147.4 A61.6,61.6 0 0 1 365,203.4" fill="none" stroke="#F2EFE8"
+          stroke-width="26" stroke-linecap="round"/>
+    <path d="M311.9,109.5 A99.5,99.5 0 0 1 402.4,200" fill="none" stroke="#F2EFE8"
+          stroke-width="24" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+var EN = {
+  e1etiket: "Push to talk",
+  e1baslik: "Keep talking where<br>the network stops.",
+  e1alt: "Audio travels straight between two phones over Bluetooth.",
+  e2etiket: "Messaging",
+  e2baslik: "A dropped link<br>never eats a message.",
+  e2alt: "It waits in the queue and sends itself when the link returns.",
+  e3etiket: "Voice calls",
+  e3baslik: "Two-way calls<br>without a phone line.",
+  e3alt: "The phone's own echo canceller and noise suppression are engaged.",
+  e4etiket: "Radar",
+  e4baslik: "How far away<br>is the other phone?",
+  e4alt: "A rough distance read from signal strength — a ring, not a point.",
+
+  hatEtiket: "LINK",
+  hatBagli: "CONNECTED · Galaxy A54",
+  hatGorusme: "IN CALL",
+  sekTelsiz: "RADIO", sekMesaj: "CHAT", sekModul: "MODULES",
+  etCihaz: "PAIRED DEVICE",
+  kBekle: "[ LISTEN ]", kKes: "[ HANG UP ]", kAra: "[ CALL ]",
+  etGunluk: "SYSTEM LOG",
+  g1: "carrier · ON",
+  g2: "TX transmit started · codec AMR-WB 16 kHz",
+  g3: "RX other side went quiet",
+  g4: "PONG received · seq 12 · 41 ms",
+  pttCanli: "ON AIR", pttAlt: "HOLD TO TALK",
+
+  m1: "I'm on the ridge, I can see the camp.",
+  m2: "Got it. Are you coming up the creek?",
+  m3: "Yes, about twenty minutes.",
+  m4: "Radio's on my pack, keep the volume up.",
+  dTeslim: "DELIVERED", dGonderildi: "SENT",
+  dKuyruk: "QUEUED · WILL SEND WHEN THE LINK RETURNS",
+  yazHint: "write a message…", yazGonder: "[ SEND ]",
+
+  cKim: "OTHER SIDE",
+  cBant: "<b>WIDEBAND 16 kHz</b>",
+  cDsp: "ECHO + NOISE SUPPRESSION ON",
+  cYol: "AUDIO ROUTE · EARPIECE",
+  cSessiz: "MUTE", cHoparlor: "SPEAKER", cKapat: "END",
+
+  rTrend: "▼ CLOSING",
+  rNot: "// bearing cannot be measured with one antenna<br>// the target is a ring, not a point",
+
+  oEtiket: "ZERO INTERNET <i>●</i> BLUETOOTH <i>●</i> PUSH TO TALK",
+  oAlt: "Radio, messages, voice calls and radar — all between two phones, even with no network."
+};
+
+var p = new URLSearchParams(location.search);
+var kare = p.get("kare") || "1";
+var dil = p.get("dil") || "tr";
+/* Uygulama yalnizca Turkce; telefon arayuzu varsayilan olarak Turkce kalir.
+   data-b = tanitim bandi (cevrilir), data-t = telefon arayuzu (arayuz=en ise cevrilir). */
+var arayuz = p.get("arayuz") || "tr";
+
+function cevir(secici) {
+  var alanlar = document.querySelectorAll(secici);
+  for (var i = 0; i < alanlar.length; i++) {
+    var a = alanlar[i].getAttribute(secici === "[data-b]" ? "data-b" : "data-t");
+    if (EN[a] !== undefined) { alanlar[i].innerHTML = EN[a]; }
+  }
+}
+
+if (dil === "en") {
+  document.documentElement.lang = "en";
+  cevir("[data-b]");
+  if (arayuz === "en") { cevir("[data-t]"); }
+}
+
+/* ses seviyesi cubuklari: sabit, tekrar uretilebilir olsun diye rastgele degil */
+var boylar = [18, 34, 52, 66, 44, 58, 28, 40, 62, 30, 48, 22];
+var kap = document.getElementById("sev1");
+if (kap) {
+  for (var j = 0; j < boylar.length; j++) {
+    var c = document.createElement("i");
+    c.style.height = boylar[j] + "px";
+    kap.appendChild(c);
+  }
+}
+
+var hedef = kare === "one" ? document.getElementById("one")
+                           : document.getElementById("k" + kare);
+if (hedef) { hedef.classList.add("acik"); }
+</script>
+</body>
+</html>

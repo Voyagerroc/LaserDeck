@@ -1,0 +1,39 @@
+# LaserDeck CI — Android PTT uygulaması
+# GitLab birincil depodur; .github/workflows/ci.yml GitHub aynası için korunuyor.
+#
+# DURUM: Bu pipeline şu an KOŞMUYOR. GitLab ücretsiz planda paylaşımlı runner
+# kullanmak için hesabın kredi kartıyla kimlik doğrulaması gerekiyor (kart
+# çekilmiyor, tek seferlik doğrulama). Depolama bundan bağımsız ve tamamen
+# ücretsiz çalışıyor.
+#
+# Çalıştırmak istersen iki yol var:
+#   1) gitlab.com/-/user_settings/identity_verification üzerinden hesabı doğrula
+#   2) Bu makineye GitLab Runner kur (sınırsız, doğrulama gerekmez, makine açık olmalı)
+# O zamana kadar dosya olduğu gibi dursun; derleme yerelde yapılıyor
+# (android klasöründe: gradlew :app:assembleDebug / :app:bundleRelease).
+
+stages:
+  - test
+
+# Android: çerçeveleme katmanı birim testleri + hata ayıklama derlemesi
+android-ptt:
+  stage: test
+  image: mingc/android-build-box:latest
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-gradle"
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+  script:
+    - cd android
+    - chmod +x gradlew
+    - ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
+  artifacts:
+    when: always
+    paths:
+      - android/app/build/outputs/apk/debug/app-debug.apk
+    reports:
+      junit: android/app/build/test-results/testDebugUnitTest/TEST-*.xml
+    expire_in: 1 week

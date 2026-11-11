@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Eski cihazlar (API <= 30): klasik BT izinleri. Keşif yapmadığımız
+         (yalnızca sistemde eşleşmiş cihazlara bağlandığımız) için konum izni gerekmez. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- API 31+ : çalışma zamanında istenir -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Radar (mesafe ölçümü) için BLE ilanı ve taraması.
+         neverForLocation KRİTİK: bu bayrak olmadan Android her BLE taraması
+         için konum izni ister. Bayrak yalnızca API 31+ geçerli olduğu için
+         radar Android 12 ve üzerinde çalışır; altında kapalı kalır.
+         Radar konum verisine ERİŞMEZ. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <!-- GPS şerit metre modülü: tek telefonla iki nokta arası mesafe.
+         Konum YALNIZCA bu modül kullanıcı tarafından açıldığında ve ekran
+         öndeyken uydu alıcısından okunur; hattan gönderilmez, diske yazılmaz,
+         izin ilk kullanımda istenir. COARSE da bildirilir: Android 12+ yalnızca
+         FINE isteyen uygulamaya iletişim kutusunu göstermeyebiliyor. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- İnternet YALNIZCA sürüm denetimi için: tek bir HTTPS GET ile
+         "daha yeni sürüm var mı?" sorulur. Ne kullanıcı verisi ne tanımlayıcı
+         ne de istatistik gönderilir; ses ve mesajlar asla cihazdan çıkmaz.
+         Uygulamanın kendi işi (telsiz, çağrı, mesaj) internetsiz çalışır. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Arka planda çalışan telsiz servisi.
+         "connectedDevice" her zaman açık: servisin işi eşleşmiş telefonla
+         Bluetooth bağlantısını canlı tutmak. "microphone" ise yalnızca çağrı
+         süresince eklenir — bas-konuşta mikrofon uygulama ön plandayken
+         kullanılıyor, çağrıda ise telefon kulağa gidince ekran kapandığı için
+         arka planda da gerekiyor. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <!-- Çağrı sırasında mikrofon ekran kapalıyken de açık kalmalı (telefonu
+         kulağına götürünce ekran söner). Android 14+ bunun için ayrı tip ister. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+
+    <!-- Çağrı ses yolu: konuşma kipi ve kulaklık/hoparlör seçimi -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- Gelen çağrıda zil + titreşim -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Yakınlık sensörüyle ekran söndürme kilidi -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Gelen çağrı ekranı kilit ekranının üstünde açılabilsin -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- API 33+ : kalıcı bildirim için çalışma zamanında istenir -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="true" />
+    <!-- Şerit metre isteğe bağlı: GPS'siz cihazda uygulama yine kurulur. -->
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.LaserDeck"
+        android:allowBackup="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".PttService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice|microphone" />
+    </application>
+
+</manifest>

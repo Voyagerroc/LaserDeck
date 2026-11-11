@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LaserDeck PTT motifi: verici noktası -> 45° ışın -> iki sinyal yayı.
+     650nm nişan lazeri kırmızısı + sıcak beyaz, mat kasa zemini üzerinde. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Işın (650nm kırmızı) -->
+    <path
+        android:pathData="M38,70 L64,44"
+        android:strokeColor="#FF2A3C"
+        android:strokeWidth="7"
+        android:strokeLineCap="round" />
+
+    <!-- Verici noktası (sıcak beyaz) -->
+    <path
+        android:pathData="M38,70 m-6.5,0 a6.5,6.5 0 1,1 13,0 a6.5,6.5 0 1,1 -13,0"
+        android:fillColor="#F2EFE8" />
+
+    <!-- Sinyal yayları -->
+    <path
+        android:pathData="M65.1,31.1 A13,13 0 0 1 77,42.9"
+        android:strokeColor="#F2EFE8"
+        android:strokeWidth="5.5"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M65.8,23.1 A21,21 0 0 1 84.9,42.2"
+        android:strokeColor="#F2EFE8"
+        android:strokeWidth="5"
+        android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Birincil eylem: yanitla. Dolu kirmizi, uygulamadaki tek doygun renk. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#C71F2E" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lazer" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+</selector>

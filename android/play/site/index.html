@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LaserDeck PTT — İnternetsiz Bas-Konuş Telsizi</title>
+<style>
+  :root {
+    --kasa: #0B0E14; --kasa2: #131826; --lazer: #FF2A3C;
+    --metin: #F2EFE8; --soluk: #8A93A6; --cizgi: #3A4150;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--kasa); color: var(--metin);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 48px 24px 64px; }
+  .motif { display: block; margin: 0 auto 8px; }
+  h1 {
+    font-family: Consolas, "SF Mono", monospace; font-size: clamp(2rem, 9vw, 3rem);
+    letter-spacing: .02em; margin: 0; text-align: center; line-height: 1.05;
+  }
+  h1 .ptt { color: var(--lazer); }
+  .alt { text-align: center; color: var(--soluk); margin: 12px 0 40px; font-size: 1.05rem; }
+  .kur {
+    display: block; background: var(--lazer); color: #fff; text-decoration: none;
+    text-align: center; font-size: 1.15rem; font-weight: 700; letter-spacing: .03em;
+    padding: 20px; border-radius: 10px; margin-bottom: 12px;
+  }
+  .kur:active { transform: translateY(1px); }
+  .kurnot { text-align: center; color: var(--soluk); font-size: .85rem; margin-bottom: 44px; }
+  h2 {
+    font-family: Consolas, monospace; font-size: 1rem; letter-spacing: .16em;
+    color: var(--lazer); text-transform: uppercase; margin: 40px 0 14px;
+  }
+  ol, ul { padding-left: 22px; margin: 0; }
+  li { margin-bottom: 10px; }
+  .kutu {
+    background: var(--kasa2); border: 1px solid var(--cizgi);
+    border-radius: 10px; padding: 18px 20px; margin-top: 8px;
+  }
+  .kutu p { margin: 0 0 10px; }
+  .kutu p:last-child { margin: 0; }
+  a { color: var(--lazer); }
+  footer {
+    margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--cizgi);
+    color: var(--soluk); font-size: .85rem; text-align: center;
+  }
+  .repo {
+    display: inline-flex; align-items: center; gap: 9px;
+    color: var(--metin); text-decoration: none;
+    font-family: Consolas, "SF Mono", monospace; font-size: .82rem;
+    border: 1px solid var(--cizgi); border-radius: 8px;
+    padding: 9px 14px; margin-bottom: 18px;
+  }
+  .repo:hover { border-color: var(--soluk); }
+  .repo svg { flex: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <svg class="motif" width="132" height="132" viewBox="0 0 512 512" aria-hidden="true">
+    <defs><filter id="g" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16"/></filter></defs>
+    <circle cx="256" cy="256" r="206" fill="none" stroke="#3A4150" stroke-width="2" stroke-dasharray="4 11"/>
+    <line x1="180" y1="332" x2="303" y2="209" stroke="#FF2A3C" stroke-width="64"
+          stroke-linecap="round" opacity=".28" filter="url(#g)"/>
+    <line x1="180" y1="332" x2="303" y2="209" stroke="#FF2A3C" stroke-width="33" stroke-linecap="round"/>
+    <circle cx="180" cy="332" r="31" fill="#F2EFE8"/>
+    <path d="M308.6,147.4 A61.6,61.6 0 0 1 365,203.4" fill="none" stroke="#F2EFE8"
+          stroke-width="26" stroke-linecap="round"/>
+    <path d="M311.9,109.5 A99.5,99.5 0 0 1 402.4,200" fill="none" stroke="#F2EFE8"
+          stroke-width="24" stroke-linecap="round"/>
+  </svg>
+
+  <h1>LASERDECK<br><span class="ptt">PTT</span></h1>
+  <p class="alt">İnternetsiz telsiz: konuş ve yazış.<br>Telefondan telefona, şebeke yokken bile.</p>
+
+  <a class="kur" href="test">UYGULAMAYI KUR</a>
+  <p class="kurnot">v2.1.0 &middot; Android 8.0 ve üzeri &middot; kapalı test</p>
+
+  <div class="kutu" style="margin-bottom:44px">
+    <p><strong>Zaten kurulu mu?</strong> Uygulamayı aç ve sağ üstteki sürüm
+    numarasına bak. <em>v2.1.0</em> yazmıyorsa eski sürümdesin: yukarıdaki
+    düğmeden yeni sürümü kurup üzerine yaz (verilerin korunur).</p>
+  </div>
+
+  <h2>Kurulum</h2>
+  <div class="kutu">
+    <p>Uygulama şu an <strong>kapalı testte</strong>. Telefonda bu sayfayı aç ve
+    yukarıdaki düğmeye bas — <a href="test">kurulum sayfası</a> testçi olma
+    adımını ve kurulum yollarını sırayla anlatır.</p>
+    <p><strong>İki telefona da kurman gerekir</strong> — telsiz çift çalışır.</p>
+  </div>
+
+  <h2>Nasıl kullanılır</h2>
+  <ol>
+    <li>İki telefonu <strong>Ayarlar &rsaquo; Bluetooth</strong>'tan birbiriyle eşleştir.</li>
+    <li>Uygulamayı iki telefonda da aç, mikrofon ve Bluetooth izinlerini ver.</li>
+    <li>Bir telefonda <strong>BEKLE</strong>'ye bas.</li>
+    <li>Diğerinde listeden ilk telefonu seçip <strong>BAĞLAN</strong>'a bas.</li>
+    <li>Hat <strong>BAĞLI</strong> olunca büyük düğmeye <strong>basılı tutarak</strong> konuş.</li>
+  </ol>
+
+  <div class="kutu" style="margin-bottom:44px">
+    <p><strong>Son elle kurulum bu.</strong> v1.4.0&rsquo;dan itibaren uygulama
+    yeni sürümü kendisi fark ediyor: açtığında ekranda
+    <em>[!] YENİ SÜRÜM HAZIR</em> şeridi ve bir <strong>GÜNCELLE</strong>
+    düğmesi çıkıyor. Bir daha bu sayfaya gelmen gerekmeyecek.</p>
+  </div>
+
+  <h2>Sesli arama</h2>
+  <div class="kutu">
+    <p><strong>ARA</strong>'ya bastığında karşı telefon <em>kendi zil sesiyle</em>
+    çalar. Karşı taraf yanıtlayınca normal telefon görüşmesi gibi çift yönlü
+    konuşursunuz — ses <strong>ahizeden</strong> çıkar, istersen
+    <strong>HOPARLÖR</strong> düğmesiyle açarsın.</p>
+    <p>Telefonun donanım <strong>yankı gidericisi ve gürültü bastırma</strong>
+    devreye girer; arka plan gürültüsü telefon görüşmesindeki gibi azaltılır.
+    Cihaz destekliyorsa ses 16 kHz geniş bantta taşınır. Çağrı ekranı hangi
+    işlemenin gerçekten açık olduğunu yazar.</p>
+  </div>
+
+  <h2>Mesajlaşma</h2>
+  <div class="kutu">
+    <p><strong>MESAJ</strong> sekmesinden aynı hat üzerinden yazışabilirsin.
+    Her mesajın kenarındaki çizgi durumunu söyler: <em>kesik çizgi</em> hat yok
+    ve mesaj sırada bekliyor, <em>soluk düz çizgi</em> gönderildi, <em>parlak
+    kırmızı</em> karşı taraf aldı.</p>
+    <p>Bağlantı koptuğunda yazdığın mesaj kaybolmaz — kuyrukta bekler ve hat
+    geri geldiğinde kendiliğinden gider. Sohbet geçmişi telefonda kalır.</p>
+  </div>
+
+  <h2>Menzil</h2>
+  <div class="kutu">
+    <p>Açık alanda ve görüş hattında en iyi sonucu verir; tipik olarak 10&ndash;30 metre,
+    cihaza göre değişir. Duvarlar, cepler ve vücut menzili kısaltır.</p>
+  </div>
+
+  <h2>Gizlilik</h2>
+  <div class="kutu">
+    <p>Sunucu yok, hesap yok, internet yok. Ses ve mesajlar doğrudan bir
+    telefondan diğerine gider. Ses hiçbir yerde saklanmaz; mesajlar yalnızca
+    iki telefonun kendi belleğinde tutulur.
+    <a href="privacy-policy">Gizlilik politikası</a></p>
+  </div>
+
+  <footer>
+    <a class="repo" href="https://gitlab.com/Voyagerroc/laserdeck">
+      <!-- GitLab tanuki -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#FC6D26" aria-hidden="true">
+        <path d="M23.955 13.587l-1.342-4.135-2.664-8.189c-.135-.423-.73-.423-.867
+                 0L16.418 9.45H7.582L4.918 1.263C4.783.84 4.185.84 4.05 1.263L1.386
+                 9.452.044 13.587c-.121.375.014.789.331 1.023L12 23.054l11.625-8.443c.318-.235.453-.647.33-1.024"/>
+      </svg>
+      <span>gitlab.com/Voyagerroc/laserdeck</span>
+    </a>
+    <br>
+    LaserDeck açık kaynak donanım/yazılım projesinin parçasıdır.<br>
+    tascierol24@gmail.com
+  </footer>
+
+</div>
+</body>
+</html>

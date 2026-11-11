@@ -1,0 +1,22 @@
+# Surumsuz APK ve sayfalar onbellege alinmamali: ayni dosya adi yuzunden
+# tarayici eski APK'yi servis edip "guncelledim ama degismedi" durumu
+# yaratiyordu. Surum numarali APK ise sonsuza dek onbellege alinabilir.
+/laserdeck-ptt.apk
+  Cache-Control: no-store
+
+/index.html
+  Cache-Control: no-cache
+
+# Kurulum kapisi: TEST_ACIK bayragi degisince testcilerin hemen gormesi gerek.
+/test.html
+  Cache-Control: no-cache
+
+# Surum bildirimi onbellege alinirsa uygulama guncellemeyi hic gormez.
+/surum.json
+  Cache-Control: no-store
+
+/privacy-policy.html
+  Cache-Control: no-cache
+
+/laserdeck-ptt-*.apk
+  Cache-Control: public, max-age=31536000, immutable

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LaserDeck PTT</string>
+
+    <!-- durum -->
+    <string name="label_link">HAT</string>
+    <string name="status_idle">BOŞTA</string>
+    <string name="status_no_bluetooth">BU CİHAZDA BLUETOOTH YOK</string>
+    <string name="status_bt_off">BLUETOOTH KAPALI</string>
+    <string name="status_no_adapter">BLUETOOTH ADAPTÖRÜ YOK</string>
+    <string name="spinner_bt_off">Bluetooth kapalı — Ayarlar\'dan açın</string>
+    <string name="spinner_no_paired">Eşleşmiş cihaz yok — önce Ayarlar\'dan eşleştirin</string>
+    <string name="toast_need_permissions">Mikrofon ve Bluetooth izinleri olmadan çalışamaz.</string>
+    <string name="toast_pair_first">Önce Ayarlar\'dan cihaz eşleştirin.</string>
+
+    <!-- sekmeler -->
+    <string name="tab_radio">TELSİZ</string>
+    <string name="tab_chat">MESAJ</string>
+
+    <!-- bağlantı -->
+    <string name="label_device">EŞLEŞMİŞ CİHAZ</string>
+    <string name="btn_listen">[ BEKLE ]</string>
+    <string name="btn_connect">[ BAĞLAN ]</string>
+    <string name="btn_disconnect">[ KES ]</string>
+    <string name="hint_roles">// bir telefonda BEKLE, diğerinde BAĞLAN</string>
+    <string name="label_log">SİSTEM GÜNLÜĞÜ</string>
+
+    <!-- bas-konuş -->
+    <string name="ptt_hint">BAS-KONUŞ</string>
+    <string name="ptt_live">YAYINDASIN</string>
+    <string name="ptt_receiving">GELEN YAYIN</string>
+
+    <!-- çağrı -->
+    <string name="call_place">[ ARA ]</string>
+    <string name="call_incoming">GELEN ÇAĞRI</string>
+    <string name="call_dialing">ARANIYOR</string>
+    <string name="call_ringing">ÇALIYOR</string>
+    <string name="call_active">GÖRÜŞME</string>
+    <string name="call_answer">YANITLA</string>
+    <string name="call_end">KAPAT</string>
+    <string name="call_decline">REDDET</string>
+    <string name="call_mute">SESSİZ</string>
+    <string name="call_speaker">HOPARLÖR</string>
+    <string name="call_you">SEN</string>
+    <string name="call_band_wide">GENİŞ BANT 16 kHz</string>
+    <string name="call_band_narrow">DAR BANT 8 kHz</string>
+    <string name="call_dsp_on">YANKI + GÜRÜLTÜ BASTIRMA AÇIK</string>
+    <string name="call_dsp_noise_only">GÜRÜLTÜ BASTIRMA AÇIK · YANKI GİDERİCİ YOK</string>
+    <string name="call_dsp_off">SES İŞLEME YOK — HOPARLÖR UĞULTU YAPABİLİR</string>
+    <string name="call_ended_hung_up">Çağrı sonlandı</string>
+    <string name="call_ended_declined">Çağrı reddedildi</string>
+    <string name="call_ended_busy">Karşı taraf meşgul</string>
+    <string name="call_ended_no_answer">Cevap yok</string>
+    <string name="call_ended_missed">Cevapsız çağrı</string>
+    <string name="call_ended_link">Bağlantı koptu</string>
+    <string name="call_ended_failed">Çağrı kurulamadı</string>
+
+    <!-- mesajlaşma -->
+    <string name="chat_hint">mesaj yaz…</string>
+    <string name="chat_send">Gönder</string>
+    <string name="chat_empty">Henüz mesaj yok.\nBağlantı kurulduğunda buradan yazışabilirsiniz.</string>
+    <string name="chat_no_peer">Mesaj göndermek için önce bağlantı kurun.</string>
+    <string name="chat_too_long">Mesaj çok uzun (en fazla %1$d karakter).</string>
+    <string name="msg_queued">KUYRUKTA</string>
+    <string name="msg_sent">GÖNDERİLDİ</string>
+    <string name="msg_delivered">TESLİM</string>
+    <string name="notif_new_message">Yeni mesaj</string>
+
+    <!-- açılış dizisi -->
+    <string name="boot_kernel">çekirdek</string>
+    <string name="boot_frame">çerçeve katmanı</string>
+    <string name="boot_radio">bluetooth radyosu</string>
+    <string name="boot_paired">eşleşmiş cihaz</string>
+    <string name="boot_codec">ses codec</string>
+    <string name="boot_store">mesaj deposu</string>
+    <string name="boot_carrier">taşıyıcı</string>
+    <string name="boot_on">AÇIK</string>
+    <string name="boot_off">KAPALI</string>
+    <string name="boot_waiting">BEKLEMEDE</string>
+    <string name="boot_ready">hazır</string>
+    <string name="boot_records">%1$d kayıt</string>
+    <string name="boot_devices">%1$d cihaz</string>
+
+    <!-- güncelleme -->
+    <string name="update_available">[!] YENİ SÜRÜM %1$s HAZIR</string>
+    <string name="update_button">[ GÜNCELLE ]</string>
+    <string name="update_dismiss">×</string>
+    <string name="update_dismiss_desc">Bu sürümü atla</string>
+    <string name="update_failed">Tarayıcı açılamadı.</string>
+    <string name="update_none">Zaten en güncel sürümdesiniz.</string>
+
+    <!-- radar -->
+    <string name="radar_closing">▼ YAKLAŞIYOR</string>
+    <string name="radar_holding">═ SABİT</string>
+    <string name="radar_opening">▲ UZAKLAŞIYOR</string>
+    <string name="radar_no_signal">SİNYAL YOK</string>
+    <string name="radar_paused">SES AKTİF</string>
+    <string name="radar_off">HAT YOK</string>
+    <string name="radar_unsupported">ANDROID 12+</string>
+    <string name="radar_no_permission">İZİN YOK</string>
+    <string name="radar_range">%1$s-%2$s m</string>
+
+    <!-- fotograf aktarimi -->
+    <string name="photo_send">Fotoğraf gönder</string>
+    <string name="photo_cancel">Aktarımı iptal et</string>
+    <string name="photo_received">Gelen fotoğraf</string>
+    <string name="photo_pick">Fotoğraf seç</string>
+    <string name="photo_busy">Zaten bir aktarım sürüyor.</string>
+    <string name="photo_no_link">Fotoğraf göndermek için önce bağlantı kurun.</string>
+    <string name="photo_sending">↑ %1$s · %%%2$d</string>
+    <string name="photo_receiving">↓ %1$s · %%%2$d</string>
+    <string name="photo_failed">Aktarım başarısız: %1$s</string>
+
+    <!-- olcum -->
+    <string name="measure_title">ÖLÇÜM</string>
+    <string name="measure_start">[ ÖLÇ · 10 sn ]</string>
+    <string name="measure_calibrate">[ KALİBRE ET · 1 m ]</string>
+    <string name="measure_close">[ KAPAT ]</string>
+    <string name="measure_hold">HAREKETSİZ DUR · %%%1$d</string>
+    <string name="measure_calibrating">1 METREDE TUT · %%%1$d</string>
+    <string name="measure_calibrated">BU CİHAZ ÇİFTİ İÇİN KALİBRE EDİLDİ</string>
+    <string name="measure_uncalibrated">KALİBRE EDİLMEDİ — ÖNCE KALİBRE ET</string>
+    <string name="measure_cal_done">KALİBRASYON KAYDEDİLDİ</string>
+    <string name="measure_band">%1$s – %2$s m</string>
+    <string name="measure_fail_signal">SİNYAL YOK</string>
+    <string name="measure_fail_few">YETERSİZ ÖRNEK</string>
+    <string name="measure_fail_unstable">KARARSIZ — HAREKETSİZ DURUP TEKRAR DENE</string>
+    <string name="measure_hw_yes">// donanım mesafe ölçümü destekleniyor</string>
+    <string name="measure_hint">// sinyal gücünden mesafe kestirimi.
+// hata çarpansaldır: alan hesabında karelenir,
+// bu yüzden m² ve m³ BİLEREK gösterilmiyor.
+// duvar arkası ölçülemez — engel mesafeyi büyük gösterir.</string>
+
+    <!-- moduller -->
+    <string name="tab_modules">MODÜL</string>
+    <string name="mod_board">DUYURU PANOSU</string>
+    <string name="mod_board_hint">herkese duyur…</string>
+    <string name="mod_publish">[ YAYINLA ]</string>
+    <string name="mod_stop_publish">[ DURDUR ]</string>
+    <string name="mod_carrier">TAŞIYICI AĞ</string>
+    <string name="mod_carrier_hint">elden ele taşınacak mesaj…</string>
+    <string name="mod_post">[ BIRAK ]</string>
+    <string name="mod_show">SENKRON GÖSTERİ</string>
+    <string name="mod_beacon">FENER</string>
+    <string name="mod_strobe">ÇAKAR</string>
+    <string name="mod_pulse">RİTİM</string>
+    <string name="mod_audio">SES</string>
+    <string name="mod_stop">DURDUR</string>
+    <string name="mod_vault">YAKINLIK KASASI</string>
+    <string name="mod_unlock">AÇ</string>
+    <string name="mod_lock">KİLİTLE</string>
+    <string name="mod_add">EKLE</string>
+    <string name="mod_no_link">Bu modül için bağlantı gerekiyor.</string>
+    <string name="mod_board_empty">// menzilde duyuru yok</string>
+    <string name="mod_carrier_empty">// çantada mesaj yok</string>
+    <string name="mod_show_idle">// saat eşitlemesi bekleniyor</string>
+    <string name="mod_show_ready">// eşitleme hazır · ±%1$d ms</string>
+    <string name="mod_show_running">// gösteri sürüyor: %1$s</string>
+    <string name="mod_vault_locked">KİLİTLİ · %1$d dosya · içerik okunamıyor</string>
+    <string name="mod_vault_unlocked">AÇIK · anahtar bellekte · 5 dk sonra kilitlenir</string>
+    <string name="mod_vault_unlocking">AÇILIYOR · karşı telefondan anahtar isteniyor…</string>
+    <string name="mod_vault_denied">REDDEDİLDİ · karşı telefon menzil dışında olabilir</string>
+    <string name="mod_vault_nopeer">HAT YOK · kasa yalnızca iki telefon birlikteyken açılır</string>
+
+    <!-- gps şerit metre -->
+    <string name="mod_tape">GPS ŞERİT METRE</string>
+    <string name="mod_tape_on">[ GPS AÇ ]</string>
+    <string name="mod_tape_off">[ KAPAT ]</string>
+    <string name="mod_tape_mark_a">[ A NOKTASI ]</string>
+    <string name="mod_tape_mark_b">[ B NOKTASI ]</string>
+    <string name="mod_tape_again">[ YENİ ÖLÇÜM ]</string>
+    <string name="mod_tape_rule">A ├──────────────────┤ B</string>
+    <string name="mod_tape_idle">// alıcı kapalı. açık gökyüzü altında GPS AÇ;\n// A noktasında dur ve işaretle, yürü, B\'de işaretle.</string>
+    <string name="mod_tape_no_permission">KONUM İZNİ YOK · dokunup izin ver\n// konum yalnızca bu modülde, yalnızca açıkken okunur</string>
+    <string name="mod_tape_gps_off">KONUM SERVİSİ KAPALI · dokunup Ayarlar\'dan aç</string>
+    <string name="mod_tape_searching">UYDU ARANIYOR · %1$d uydu görünür</string>
+    <string name="mod_tape_fix">FIX ±%1$s m · %2$d/%3$d uydu</string>
+    <string name="mod_tape_marking">HAREKETSİZ DUR · %%%1$d</string>
+    <string name="mod_tape_point">%1$s  ±%2$s m · %3$d fix</string>
+    <string name="mod_tape_live">A\'dan uzaklık  %1$s m  ±%2$s</string>
+    <string name="mod_tape_result_band">± %1$s m · A→B yön %2$d°</string>
+    <string name="mod_tape_same">AYNI NOKTA · fark gürültünün altında</string>
+    <string name="mod_tape_stale">// iki nokta arası %1$d dk geçti: ortak sapma artık sadeleşmiyor</string>
+    <string name="mod_tape_fail_fix">FIX YOK · gökyüzünü gör, uydu bekle</string>
+    <string name="mod_tape_fail_few">YETERSİZ FIX · hareketsiz dur, açık alanda tekrar dene</string>
+    <string name="mod_tape_need_fine">Kesin konum izni gerekiyor: yaklaşık konumla GPS çalışmaz.</string>
+    <string name="mod_tape_hint">// tek fix ±3–5 m; iki noktanın FARKI daha iyi:\n// uydu, yörünge ve iyonosfer hatası ikisinde de aynı,\n// farkta sadeleşir. kalan hata ± olarak yazılır.\n// yükseklik hesaba katılmaz. hatasız ölçüm yok, dürüst ölçüm var.</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yayın oku: sağa doğru ivmelenen üçgen. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="@color/lazer">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M3.4,20.6 L21,12 L3.4,3.4 L3.4,10.1 L15.5,12 L3.4,13.9 Z" />
+</vector>

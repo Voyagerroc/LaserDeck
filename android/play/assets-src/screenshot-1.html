@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;padding:0;width:1080px;height:1920px;overflow:hidden;
+    background:#14171C;font-family:"Segoe UI",system-ui,sans-serif;color:#F2EFE8}
+  .statusbar{height:72px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 40px;font-size:32px;color:#8A93A6;background:#0F1216}
+  .content{padding:44px 44px 40px;display:flex;flex-direction:column;height:1808px;box-sizing:border-box}
+  .durum{font-size:42px;font-weight:700;margin-bottom:34px}
+  .durum .ok{color:#7BD88F}
+  .spinner{border:2px solid #3A4150;border-radius:8px;padding:26px 30px;font-size:38px;
+    color:#C9CFDA;display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+  .spinner .caret{color:#8A93A6;font-size:30px}
+  .btnrow{display:flex;gap:22px;margin-bottom:30px}
+  .btn{flex:1;background:#2E3238;border-radius:8px;text-align:center;padding:30px 0;
+    font-size:34px;font-weight:600;letter-spacing:.04em;color:#F2EFE8}
+  .log{flex:1;overflow:hidden;font-family:Consolas,monospace;font-size:31px;
+    line-height:1.75;color:#C9CFDA;padding:10px 6px}
+  .log .tx{color:#FF6B77}.log .rx{color:#7BD88F}
+  .ptt{height:470px;background:#2E3238;border-radius:12px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;margin-top:26px;
+    box-shadow:inset 0 0 0 3px #3A4150}
+  .ptt .l1{font-size:64px;font-weight:800;letter-spacing:.06em}
+  .ptt .l2{font-size:34px;color:#8A93A6;margin-top:14px}
+</style></head>
+<body>
+<div class="statusbar"><span>12:47</span><span>&#9679; BT &nbsp; &#9650; 78%</span></div>
+<div class="content">
+  <div class="durum">Durum: <span class="ok">BAĞLI &lt;-&gt; Galaxy A54</span></div>
+  <div class="spinner"><span>Galaxy A54 (5C:3A:45:B2:11:9E)</span><span class="caret">&#9660;</span></div>
+  <div class="btnrow">
+    <div class="btn">SUNUCU (BEKLE)</div><div class="btn">BAĞLAN</div><div class="btn">KES</div>
+  </div>
+  <div class="log">
+Dinleniyor... Diğer telefonda 'Bağlan'a bas.<br>
+<span class="tx">TX: konuşma başladı (codec=1)</span><br>
+<span class="tx">TX: konuşma bitti</span><br>
+<span class="rx">RX: karşı taraf konuşuyor (codec=1)</span><br>
+<span class="rx">RX: karşı taraf sustu</span><br>
+<span class="tx">TX: konuşma başladı (codec=1)</span><br>
+<span class="tx">TX: konuşma bitti</span><br>
+PONG alındı (seq=12)
+  </div>
+  <div class="ptt"><div class="l1">BAS-KONUŞ</div><div class="l2">(basılı tut)</div></div>
+</div>
+</body></html>

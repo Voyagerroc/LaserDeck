@@ -1,0 +1,8 @@
+{
+  // LaserDeck PTT — gizlilik politikası statik sitesi (assets-only Worker)
+  "name": "laserdeck-ptt",
+  "compatibility_date": "2026-01-01",
+  "assets": {
+    "directory": "./site"
+  }
+}

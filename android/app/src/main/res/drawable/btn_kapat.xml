@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cagriyi bitirme: dolu degil ama kirmizi cerceveli - yikici ama birincil degil. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#2A1116" />
+            <corners android:radius="10dp" />
+            <stroke android:width="2dp" android:color="@color/lazer" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="10dp" />
+            <stroke android:width="2dp" android:color="@color/lazer" />
+        </shape>
+    </item>
+</selector>

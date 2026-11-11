@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lazer çerçeveli düğmenin yazısı: açıkken lazer, devre dışıyken soluk. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:color="@color/soluk" />
+    <item android:color="@color/lazer" />
+</selector>

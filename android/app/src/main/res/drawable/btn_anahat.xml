@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İkincil komutlar: gövdeye kazınmış etiket gibi, dolgusuz. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="8dp" />
+            <stroke android:width="1dp" android:color="#1B2130" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/alan" />
+            <corners android:radius="8dp" />
+            <stroke android:width="1dp" android:color="@color/soluk" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="8dp" />
+            <stroke android:width="1dp" android:color="@color/cizgi" />
+        </shape>
+    </item>
+</selector>
