@@ -1,7 +1,7 @@
 # Google Play Console — Yayın Adımları (LaserDeck PTT)
 
 AAB hazır: `android\app\build\outputs\bundle\release\app-release.aab`
-İmza anahtarı: `My Project\LaserDeckPTT-android-anahtar\` (ANAHTAR-BILGILERI.txt — YEDEKLE!)
+İmza anahtarı: `My Project\_ozel-anahtarlar\LaserDeckPTT-android-anahtar\` (ANAHTAR-BILGILERI.txt — YEDEKLE!)
 
 ## 0. Önemli tarih notu
 31 Ağustos 2026'dan itibaren yeni uygulamalar **targetSdk 36** ister — bu uygulama
