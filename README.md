@@ -94,11 +94,32 @@ Ayrıntılı katman tablosu, kurulum ve yol haritası: [`android/README.md`](and
 
 ## 🔨 Derleme
 
-```bash
+Gerekenler: **JDK 17**, Android SDK **Platform 36**, Git ve ilk bağımlılık
+indirmeleri için ağ erişimi. Depo Gradle **8.11.1** wrapper, Android Gradle
+Plugin **8.10.1** ve Kotlin **1.9.24** kullanır; ayrıca sistem Gradle kurulumu
+gerekmez. Android Studio SDK yöneticisiyle Platform 36'yı kurun. SDK yolunu
+yerel `android/local.properties` içindeki `sdk.dir` ile veya `ANDROID_HOME`
+ile tanımlayın; bu dosya depoya girmez.
+
+Windows PowerShell:
+
+```powershell
 cd android
-gradlew :app:testDebugUnitTest   # protokol birim testleri (cihaz gerekmez)
-gradlew :app:assembleRelease     # imzalı APK (keystore.properties gerekir)
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug --no-daemon
 ```
+
+Linux/macOS:
+
+```sh
+cd android
+chmod +x gradlew
+./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
+```
+
+Bu komutlar imza anahtarı veya fiziksel cihaz istemez. Debug APK
+`android/app/build/outputs/apk/debug/` altında oluşur. Release imzalama ve
+dağıtım kanıtı için [sürüm kontrol listesini](docs/RELEASE.md), kaynak ve
+cihaz doğrulama ayrımı için [Android kılavuzunu](android/README.md) okuyun.
 
 ## 🚀 Dağıtım
 
