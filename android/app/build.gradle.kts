@@ -61,7 +61,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
     testImplementation("junit:junit:4.13.2")
     // android.jar'daki org.json yalnızca boş bir taslak; gerçek uygulama olmadan
     // MessageStore birim testinde çalışamaz.
