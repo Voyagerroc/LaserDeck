@@ -1,59 +1,76 @@
-# 📱 LaserDeck PTT — Telefon-Telefon Bas-Konuş (Bluetooth MVP)
+# LaserDeck PTT — Android geliştirme ve deneme
 
-İki Android telefon arasında, **internetsiz** ortamda, açık alanda ~30 m hedefiyle
-yarı çift yönlü (half-duplex) **ses iletimi** yapan bas-konuş (walkie-talkie) uygulaması.
+LaserDeck iki Android telefon arasında Bluetooth Classic RFCOMM üzerinden
+bas-konuş, tam çift yönlü arama, mesajlaşma ve fotoğraf aktarımı sunan
+uygulamanın kaynak kodudur. GPS şerit metre ve yakınlık radarı ayrı
+modüllerdir. Ürün kapsamı ve fiziksel sınırlar [kök README'de](../README.md)
+anlatılır; burada geliştirici kurulumu ve doğrulama adımları bulunur.
 
-Taşıyıcı **Bluetooth Classic (RFCOMM)**. Çerçeve katmanı (preamble/sync/CRC32)
-**taşıyıcıdan bağımsızdır** — `FrameTransport` arayüzünü uygulayan herhangi bir
-taşıyıcı (ör. BLE L2CAP) aynı uygulamaya eklenebilir.
+## Derleme ortamı
 
-## Mimari
+- JDK 17; `java -version` çıktısını kontrol edin.
+- Android SDK Platform 36. Android Studio SDK Manager ile kurun.
+- Gradle wrapper 8.11.1, AGP 8.10.1 ve Kotlin 1.9.24 depoda tanımlıdır.
+- SDK yolunu yalnızca yerel `local.properties` (`sdk.dir=...`) veya
+  `ANDROID_HOME` ile tanımlayın. İlk senkron bağımlılıkları indirir.
 
+Bu dizinden Windows PowerShell:
+
+```powershell
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug --no-daemon
 ```
-Mikrofon ─> AudioEngine ─> VoiceCodec (AMR-NB 12.2k) ─> PttController
-                                                            │  LinkFrame
-                                                            ▼  (0xAA 0x7E | hdr | payload | CRC32)
-                                                     FrameTransport  ◄── arayüz
-                                                      └─ BluetoothRfcommTransport   ✅
+
+Linux/macOS:
+
+```sh
+chmod +x gradlew
+./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
 ```
 
-| Katman | Dosya | Not |
-|---|---|---|
-| Çerçeve protokolü | `protocol/LinkFrame.kt` | Sync + CRC32, gürültüye dayanıklı parser (JVM testli) |
-| Taşıyıcı arayüzü | `transport/FrameTransport.kt` | Ses motoru taşıyıcıyı bilmez |
-| Bluetooth RFCOMM | `transport/BluetoothRfcommTransport.kt` | Eşleşmiş cihaza bağlanır; keşif/konum izni gerekmez |
-| Codec soyutlaması | `audio/VoiceCodec.kt` | id 0=PCM, 1=AMR-NB, 2=Codec2 (TODO), 3=Opus (TODO) |
-| AMR-NB codec | `audio/AmrNbCodec.kt` | MediaCodec ile yerleşik, native bağımlılık yok |
-| Ses G/Ç | `audio/AudioEngine.kt` | AudioRecord/AudioTrack, 20 ms çerçeve |
-| PTT durum makinesi | `PttController.kt` | AUDIO_START/FRAME/END, yarı çift yönlü kilit |
-| Ön plan servisi | `PttService.kt` | Bağlantı + PTT arka planda yaşar; kalıcı bildirim, "Kapat" eylemi |
-| Ekran | `MainActivity.kt` | Servise bind olur; cihaz seç → Bekle/Bağlan/Kes → basılı tut konuş |
-| GPS şerit metre | `modules/GpsTape.kt`, `geo/Geodesy.kt` | Tek telefon; A/B noktalarında 8 s fix ortalaması, Vincenty (WGS84), ± bandı; konum izni yalnızca bu modülde (JVM testli) |
+JVM testleri cihaz gerektirmez. Debug build release imzalama anahtarı
+gerektirmez. Test raporu `app/build/reports/tests/testDebugUnitTest/`, debug
+APK `app/build/outputs/apk/debug/` altında bulunur. `assembleRelease`
+çıktısının imzalı olduğu varsayılmamalıdır: release imzalama yalnızca yerel
+`keystore.properties` yüklendiğinde yapılandırılır. Anahtarlar repoya girmez.
 
-## Kurulum ve Deneme
+## Kaynak haritası
 
-1. Klasörü **Android Studio** ile aç (`android/`); Gradle senkronu bağımlılıkları indirir
-   (AGP 8.5.2, Kotlin 1.9.24, tek bağımlılık: coroutines).
-2. İki telefonu önce **Ayarlar → Bluetooth**'tan birbirleriyle eşleştir.
-3. Uygulamayı iki telefona da kur; mikrofon + Bluetooth izinlerini ver.
-4. A telefonunda **Sunucu (Bekle)** → B telefonunda listeden A'yı seçip **Bağlan**.
-5. Büyük düğmeye **basılı tutarak** konuş; karşı taraf konuşurken düğme kilitlenir.
+Yollar `app/src/main/java/com/voyagerroc/laserdeck/ptt/` altındadır.
 
-Protokol birim testleri (cihaz gerekmez): `gradlew :app:testDebugUnitTest`
+| Alan | Başlangıç dosyası | Kapsam |
+| --- | --- | --- |
+| Çerçeveleme | `protocol/LinkFrame.kt` | Taşıyıcıdan bağımsız başlık, yük ve CRC32 |
+| Taşıyıcı | `transport/FrameTransport.kt`, `BluetoothRfcommTransport.kt` | RFCOMM bağlantısı |
+| Codec | `audio/VoiceCodec.kt`, `audio/AmrCodec.kt` | PCM/AMR-NB kodlama sınırı |
+| Bas-konuş | `PttController.kt`, `audio/AudioEngine.kt` | Yarı çift yönlü PTT akışı |
+| Arama | `call/CallController.kt`, `audio/CallAudioSession.kt` | Tam çift yönlü arama ve cihaz ses işleme |
+| Kayıp ses | `audio/PacketLossConcealer.kt` | Arama oynatımında kısa kayıplar için perde tekrarı/sönme, uzun kayıplar için konfor gürültüsü |
+| Mesaj/fotoğraf | `chat/Messenger.kt`, `files/FileTransferManager.kt` | Teslimat ve aktarım akışları |
+| Ön plan | `PttService.kt` | Bağlantı ve bildirim yaşam döngüsü |
+| GPS | `modules/GpsTape.kt`, `geo/Geodesy.kt` | Tek telefonla A–B ölçümü ve belirsizlik bandı |
 
-## Bilinen sınırlar (MVP)
+`PacketLossConcealer` arama sesinde kullanılır; bu, her modülde PLC veya
+belirli cihazlarda ölçülmüş ses kalitesi garantisi değildir. JVM testleri
+protokol, metin, mesajlaşma ve jeodezi alanlarını kapsar; radyo, mikrofon,
+yankı iptali ve gerçek mesafe ölçümleri için cihaz testi gerekir.
 
-- Jitter tamponu AudioTrack'in kendi tamponudur (~160 ms); kayıp çerçeve gizleme (PLC) yok.
-- iOS yok (RFCOMM iOS'ta üçüncü taraf uygulamalara kapalı; iOS için yol BLE L2CAP'tir).
-- 30 m menzil **açık alan / görüş hattı** içindir; duvar ve vücut gölgelemesi menzili düşürür.
+## İki telefonla kabul denemesi
 
-## Yol haritası
+1. Test edilen commit, APK SHA-256, Android sürümü ve iki cihaz modelini
+   kaydedin; kişisel mesajları veya konumu test kaydına koymayın.
+2. Telefonları sistem Bluetooth ayarlarında eşleştirin ve debug APK'yı
+   ikisine kurun. İstenen izinleri ilgili özellikte değerlendirin.
+3. Bir telefonda bekleme/sunucu, diğerinde bağlantı akışını izleyin; PTT'yi
+   iki yönde deneyin. Arama, mesaj teslimatı ve örnek fotoğrafı ayrıca deneyin.
+4. İzin reddi/geri alma, bağlantı kopması, uygulamanın arka plana alınması
+   ve yeniden bağlanma sonuçlarını ayrı kaydedin.
+5. Mesafe ve ses değerlendirmesine ortamı ve belirsizliği ekleyin. CI/JVM
+   başarısı fiziksel telefon denemesinin yerine geçmez.
 
-1. ~~**ForegroundService + otomatik yeniden bağlanma**~~ ✅ `PttService` + supervisor
-   döngüsü: sunucu kopunca hemen tekrar dinler, istemci üstel geri çekilmeyle
-   (2s→15s) aynı cihaza yeniden bağlanır; kalıcı bildirimden "Kapat" ile durdurulur.
-2. **Opus (libopus JNI)** — 6–24 kbps uyarlanabilir kalite; sinyal zayıfladıkça bitrate düşür.
-3. **Codec2 (JNI)** — 0.7–3.2 kbps; optik dongle hattının hedef codec'i.
-4. **BLE Coded PHY taşıyıcısı** — destekleyen cihazlarda 50–100+ m menzil.
-5. **Uygulama katmanı şifreleme ve kimlik doğrulama** — X25519 anahtar anlaşması +
-   AES-GCM, ilk bağlantıda eş anahtarı sabitleme (TOFU).
+Bu bir kabul planıdır; adımların listelenmesi cihaz testinin yapıldığını
+göstermez. iOS desteği yoktur. RFCOMM, AMR ve donanım ses işleme sınırları
+korunur; Opus/Codec2, BLE taşıyıcısı ve uygulama katmanı şifreleme ayrı
+gelecek çalışmalar olarak değerlendirilmelidir.
+
+Dağıtım öncesi [sürüm kanıtı kontrol listesi](../docs/RELEASE.md) ve
+[güvenlik bildirim yolu](../SECURITY.md) kullanılmalıdır.
