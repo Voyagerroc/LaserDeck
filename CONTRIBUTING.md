@@ -13,3 +13,5 @@ Never commit `local.properties`, signing files, APK/AAB outputs, credentials
 or personal test records. Report vulnerabilities through [SECURITY.md](SECURITY.md).
 Release publication and existing signing identities are maintainer actions;
 see [docs/RELEASE.md](docs/RELEASE.md).
+
+CI retains available HTML unit-test reports for 14 days and debug APKs for 7 days, including after a failed test/build. Missing artifacts are reported without masking the original failure. Debug artifacts are not release-signed store distributions.
