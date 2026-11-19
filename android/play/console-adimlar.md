@@ -65,4 +65,5 @@ Kapalı testte 12 testçi 14 gün "katılmış" (opt-in) kaldıktan sonra:
 "Next/İleri" düğmesi kilitliyse sağ üst ⋮ menüsünden **Save/Kaydet** dene.
 
 ## Sonraki sürümler
-`versionCode`'u artır (2, 3, ...) → `gradlew :app:bundleRelease` → aynı kanala yükle.
+`versionCode`'u artır (güncel: 14; `app/build.gradle.kts`) → `gradlew :app:bundleRelease` → aynı kanala yükle.
+Site/APK dağıtımı ayrı bir zincirdir: bkz. `DEPLOY.md` (APK siteye elle konur; depoda yoktur).
