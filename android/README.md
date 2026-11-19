@@ -10,7 +10,8 @@ anlatılır; burada geliştirici kurulumu ve doğrulama adımları bulunur.
 
 - JDK 17; `java -version` çıktısını kontrol edin.
 - Android SDK Platform 36. Android Studio SDK Manager ile kurun.
-- Gradle wrapper 8.11.1, AGP 8.10.1 ve Kotlin 1.9.24 depoda tanımlıdır.
+- Gradle wrapper, AGP ve Kotlin sürümleri depoda tanımlıdır:
+  `gradle/wrapper/gradle-wrapper.properties` ve `build.gradle.kts`.
 - SDK yolunu yalnızca yerel `local.properties` (`sdk.dir=...`) veya
   `ANDROID_HOME` ile tanımlayın. İlk senkron bağımlılıkları indirir.
 
