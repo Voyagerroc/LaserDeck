@@ -1,64 +1,77 @@
-<div align="center">
+# LaserDeck
 
-# 📟 LaserDeck PTT — Offline Telefon-Telefon İletişim
+Push-to-talk, calls, messages and photos between two Android phones over Bluetooth, with no internet, server or account.
 
-**İnternetsiz • Sunucusuz • Hesapsız • Nokta-Noktaya Bluetooth İletişim Uygulaması**
+LaserDeck, birbirine yakın iki Android telefon arasında internetsiz, sunucusuz ve hesapsız bas-konuş, arama, mesajlaşma ve fotoğraf aktarımı sağlayan Kotlin uygulamasıdır.
 
-[![CI](https://github.com/Voyagerroc/LaserDeck/actions/workflows/ci.yml/badge.svg)](https://github.com/Voyagerroc/LaserDeck/actions/workflows/ci.yml)
-[![Platform](https://img.shields.io/badge/Platform-Android%208.0%2B-green.svg?logo=android)](https://developer.android.com/)
-[![Language](https://img.shields.io/badge/Language-Kotlin-blue.svg?logo=kotlin)](https://kotlinlang.org/)
-[![Carrier](https://img.shields.io/badge/Carrier-Bluetooth%20Classic%20RFCOMM-blue.svg?logo=bluetooth)](https://en.wikipedia.org/wiki/Bluetooth)
-[![GitLab Mirror](https://img.shields.io/badge/GitLab-Mirror-orange?logo=gitlab)](https://gitlab.com/Voyagerroc/LaserDeck)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**Durum:** v2.1.0 ön sürüm (pre-release). Birim testleri CI'da geçiyor; iki fiziksel telefonla kabul denemesi kayıtlı değil.
 
-</div>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/laserdeck-hero-dark.webp">
+  <img src="docs/assets/laserdeck-hero-light.webp" alt="LaserDeck v2.1.0 pre-release: the app's idle talk screen, captured from a debug build on an Android emulator, beside the line Push-to-talk between two phones over Bluetooth." width="100%">
+</picture>
 
----
+[![CI](https://img.shields.io/github/actions/workflow/status/Voyagerroc/LaserDeck/ci.yml?branch=main&label=CI&style=flat)](https://github.com/Voyagerroc/LaserDeck/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/Voyagerroc/LaserDeck?style=flat)](LICENSE)
+[![Status](https://img.shields.io/badge/status-pre--release-lightgrey?style=flat)](https://github.com/Voyagerroc/LaserDeck/releases/tag/v2.1.0)
 
-<!-- voyagerroc-brand:start -->
-## Voyagerroc Technologies
+## İndirme
 
-[LaserDeck PTT product overview / ürün sayfası](https://voyagerroctechnologies.com/urunler/laserdeck/) · [Voyagerroc Technologies — applications, SaaS & Si workflows](https://voyagerroctechnologies.com/)
+[v2.1.0 sürüm sayfası](https://github.com/Voyagerroc/LaserDeck/releases/tag/v2.1.0) (ön sürüm): `laserdeck-ptt-2.1.0.apk` (yaklaşık 1,2 MB) ve `SHA256SUMS.txt` dosyası. APK'yı kurmadan önce SHA-256 özetini bu dosyayla karşılaştırın. Android 8.0 ve üstü gerekir. Ürün sayfası: [voyagerroctechnologies.com/urunler/laserdeck](https://voyagerroctechnologies.com/urunler/laserdeck/).
 
-Product scope, available access and limitations are documented on the product page. / Ürün kapsamı, erişim durumu ve sınırlar ürün sayfasında açıklanır.
-<!-- voyagerroc-brand:end -->
+Sürümdeki APK, var olan genel dağıtımdan değiştirilmeden alınmıştır; sürüm notları imza doğrulamasını ve neyin iddia edilmediğini açıklar. Bu APK kaynaktan yeniden derlenmedi ve kaynakla birebir eşleştiği kanıtlanmadı ([docs/RELEASE.md](docs/RELEASE.md)).
 
-## 📖 Genel Bakış
+## Neler var, neler denendi
 
-LaserDeck PTT, iki Android telefon arasında **internet, sunucu ve hesap olmadan**
-doğrudan Bluetooth üzerinden çalışan yerel bir iletişim uygulamasıdır: bas-konuş,
-tam çift yönlü sesli arama, mesajlaşma, fotoğraf aktarımı ve yakınlık radarı.
+Aşağıdaki tablo kaynakta bulunan işlevleri ve CI'daki birim testlerinin neyi kapsadığını gösterir. Hiçbir satır iki fiziksel telefonla denenmiş sayılmaz: [docs/RELEASE.md](docs/RELEASE.md) bu sürüm için fiziksel cihaz kabul testi yapılmadığını kaydeder, [android/README.md](android/README.md) ise iki telefonlu denemeyi bir plan olarak anlatır.
 
-**[⬇ APK indir](https://laserdeck-ptt.voyagerroc.workers.dev)** · Android 8.0+ · ~1 MB · hesap yok, sunucu yok
+| Özellik | Kaynakta | Birim testi |
+|---|---|---|
+| Bas-konuş (yarı çift yönlü) | Var | Yok. Yalnızca ortak çerçeve katmanı (`LinkFrame`) testli |
+| Tam çift yönlü sesli arama (çaldırma, ahize/hoparlör, donanım yankı iptali ve gürültü bastırma) | Var | Yok |
+| Mesajlaşma: teslim onayı, çevrimdışı kuyruk, cihaz içi geçmiş | Var | Var: kuyruk, onay, yeniden gönderim, tekrar eden kimlik, geçmiş (`MessengerTest`) |
+| Fotoğraf aktarımı: orijinal baytlar, SHA-256 doğrulamalı | Var | Yok |
+| Yakınlık radarı: iki telefon arası mesafe tahmini (Android 12 ve üstü) | Var | Yok |
+| GPS şerit metre: tek telefonla A'dan B'ye mesafe, ± bandıyla | Var | Kısmen: jeodezi hesabı ve fix ortalaması (`GeodesyTest`); GPS alıcısı testli değil |
+| Uygulama içi güncelleme denetimi | Var | Yok |
 
-| Özellik | Durum |
-|---|---|
-| Bas-konuş (half-duplex) sesli iletişim | ✅ |
-| Tam çift yönlü sesli arama (çaldırma, cevaplama, ahize/hoparlör, donanım AEC + gürültü bastırma) | ✅ |
-| Teslimat onaylı mesajlaşma, çevrimdışı kuyruk, cihaz içi geçmiş | ✅ |
-| Fotoğraf aktarımı — orijinal baytlar, SHA-256 doğrulamalı, yeniden sıkıştırma yok | ✅ |
-| Yakınlık radarı — iki telefon arası mesafe tahmini | ✅ (Android 12+) |
-| GPS şerit metre — tek telefonla A→B mesafesi, ± bandıyla | ✅ |
-| Uygulama içi güncelleme denetimi | ✅ |
+**Taşıyıcı:** Bluetooth Classic RFCOMM. İnternet, Wi-Fi, hücresel veri, sunucu ve hesap kullanılmaz. Uygulamanın yaptığı tek ağ çağrısı sürüm denetimidir ve hiçbir kullanıcı verisi taşımaz. Konum yalnızca GPS şerit metre modülü açıkken okunur ve cihazdan çıkmaz.
 
-**Taşıyıcı:** Bluetooth Classic RFCOMM. İnternet, Wi-Fi, hücresel veri, sunucu ve
-hesap kullanılmaz. Uygulamanın yaptığı tek ağ çağrısı sürüm denetimidir ve hiçbir
-kullanıcı verisi taşımaz. Konum yalnızca GPS şerit metre modülü açıkken okunur ve
-cihazdan çıkmaz.
+**Sınırlar.** Menzil görüş hattında yaklaşık 10–30 m beklenir; 4 MB'lık bir fotoğrafın yaklaşık iki dakika süreceği tahmin edilir. İkisi de radyonun fiziğine dayanan beklentidir, bu sürümde iki telefonla ölçülmedi. Donanım yankı iptali cihaza bağlıdır; yoksa arama ekranı bunu söyler. Radar mesafe ölçer, yön ölçmez: tek antenle yön üretilemez, hedef nokta değil halka olarak çizilir. GPS şerit metre tüketici alıcısının fiziğine bağlıdır: tek fix ±3–5 m; iki noktanın farkı daha iyidir ama hatasız değildir, her sonuç ± bandıyla yazılır.
 
-**Dürüst sınırlar.** Menzil görüş hattında 10–30 m. 4 MB'lık bir fotoğraf yaklaşık
-iki dakika sürer — bu yazılımın değil radyonun tavanıdır. Donanım yankı iptali cihaza
-bağlıdır ve yoksa arama ekranı bunu açıkça söyler. Radar mesafe ölçer, yön ölçmez:
-tek antenle yön üretilemez, hedef nokta değil halka olarak çizilir. GPS şerit metre
-tüketici alıcısının fiziğine bağlıdır: tek fix ±3–5 m; iki noktanın farkı daha iyidir
-ama "hatasız" değildir — her sonuç ± bandıyla yazılır.
+## Ekran görüntüleri
 
----
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/laserdeck-screens-dark.webp">
+  <img src="docs/assets/laserdeck-screens-light.webp" alt="LaserDeck 2.1.0 uygulamasının üç gerçek ekranı: telsiz sekmesi, mesaj sekmesi ve GPS şerit metre bölümünün göründüğü modül sekmesi, hepsi boşta." width="100%">
+</picture>
 
-## 🏗️ Mimari
+Gerçek ekranlar: 2.1.0 hata ayıklama sürümü, Android emülatörü, boşta, çünkü ikinci telefon bağlı değildi. Hiçbir görüntü düzenlenmedi. Uygulamanın tek ve sabit bir koyu teması vardır; arayüz Türkçedir. GPS şerit metre kapalıdır, görüntüde ölçüm yoktur. `android/play/` altındaki mağaza görselleri üretilmiş tasarımlardır, cihaz görüntüsü değildir.
 
-Tüm modüller taşıyıcıdan bağımsız `LinkFrame` çerçeve katmanı üzerinde çalışır;
-taşıyıcı `FrameTransport` arayüzünün arkasındadır.
+## Derleme
+
+Gerekenler: JDK 17, Android SDK Platform 36, Git ve ilk bağımlılık indirmeleri için ağ erişimi. Gradle sarmalayıcı, Android Gradle Plugin ve Kotlin sürümleri [`android/gradle/wrapper/gradle-wrapper.properties`](android/gradle/wrapper/gradle-wrapper.properties) ile [`android/build.gradle.kts`](android/build.gradle.kts) içinde tanımlıdır; ayrıca sistem Gradle kurulumu gerekmez. SDK yolunu yerel `android/local.properties` içindeki `sdk.dir` ile veya `ANDROID_HOME` ile tanımlayın; bu dosya depoya girmez.
+
+Windows PowerShell:
+
+```powershell
+cd android
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug --no-daemon
+```
+
+Linux/macOS:
+
+```sh
+cd android
+chmod +x gradlew
+./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
+```
+
+Bu komutlar imza anahtarı veya fiziksel cihaz istemez. Debug APK `android/app/build/outputs/apk/debug/` altında oluşur. Release imzalama ve dağıtım kanıtı için [sürüm kontrol listesini](docs/RELEASE.md), kaynak haritası ve iki telefonlu deneme planı için [Android kılavuzunu](android/README.md) okuyun.
+
+## Mimari
+
+Tüm modüller taşıyıcıdan bağımsız `LinkFrame` çerçeve katmanı üzerinde çalışır; taşıyıcı `FrameTransport` arayüzünün arkasındadır.
 
 ```mermaid
 flowchart TD
@@ -90,51 +103,12 @@ flowchart TD
     FT --> BT
 ```
 
-Ayrıntılı katman tablosu, kurulum ve yol haritası: [`android/README.md`](android/README.md)
+## Dağıtım
 
-## 🔨 Derleme
+Sürüm sitesi Cloudflare Workers üzerindedir: `android/play/` altında mağaza paketi, gizlilik politikası ve `surum.json` sürüm bildirimi bulunur. Güvenlik bildirimi için [SECURITY.md](SECURITY.md), katkı için [CONTRIBUTING.md](CONTRIBUTING.md), iletişim için [sitenin iletişim sayfası](https://voyagerroctechnologies.com/yasal/iletisim/).
 
-Gerekenler: **JDK 17**, Android SDK **Platform 36**, Git ve ilk bağımlılık
-indirmeleri için ağ erişimi. Depo Gradle **8.11.1** wrapper, Android Gradle
-Plugin **8.10.1** ve Kotlin **1.9.24** kullanır; ayrıca sistem Gradle kurulumu
-gerekmez. Android Studio SDK yöneticisiyle Platform 36'yı kurun. SDK yolunu
-yerel `android/local.properties` içindeki `sdk.dir` ile veya `ANDROID_HOME`
-ile tanımlayın; bu dosya depoya girmez.
+## Lisans
 
-Windows PowerShell:
+MIT, bkz. [LICENSE](LICENSE).
 
-```powershell
-cd android
-.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug --no-daemon
-```
-
-Linux/macOS:
-
-```sh
-cd android
-chmod +x gradlew
-./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
-```
-
-Bu komutlar imza anahtarı veya fiziksel cihaz istemez. Debug APK
-`android/app/build/outputs/apk/debug/` altında oluşur. Release imzalama ve
-dağıtım kanıtı için [sürüm kontrol listesini](docs/RELEASE.md), kaynak ve
-cihaz doğrulama ayrımı için [Android kılavuzunu](android/README.md) okuyun.
-
-## 🚀 Dağıtım
-
-Sürüm sitesi Cloudflare Workers üzerinde: `android/play/` altında mağaza paketi,
-gizlilik politikası ve `surum.json` sürüm bildirimi bulunur.
-
----
-
-## 🔗 Depo Bağlantıları
-
-- **GitHub:** [Voyagerroc/LaserDeck](https://github.com/Voyagerroc/LaserDeck)
-- **GitLab:** [Voyagerroc/LaserDeck](https://gitlab.com/Voyagerroc/LaserDeck)
-
----
-
-## 📜 Lisans
-
-**MIT License** © 2026 Erol Tasci — araştırma, eğitim ve açık mühendislik için serbesttir.
+Erol Taşcı, Voyagerroc Technologies · [voyagerroctechnologies.com](https://voyagerroctechnologies.com/)
