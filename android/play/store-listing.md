@@ -1,5 +1,7 @@
 # LaserDeck PTT — Play Store Listing Metinleri
 
+> **Taslak (2.1.0, sürüm kodu 14; `android/app/build.gradle.kts`):** Aşağıdaki Türkçe metin 2.1.0 özellik kümesi için yazıldı. Play Console'da hangi metnin yüklü olduğu bu depodan doğrulanamaz; konsola girilene kadar taslaktır. Eski 1.1.0 metni bu dosyanın geçmişindedir (git). Karakter sınırları: kısa ≤80, tam ≤4000, yenilikler ≤500.
+
 ## Uygulama adı (≤30 karakter)
 ```
 LaserDeck PTT — Telsiz
@@ -8,51 +10,58 @@ LaserDeck PTT — Telsiz
 
 ## Kısa açıklama (≤80 karakter)
 ```
-İnternetsiz telsiz: iki telefon arası Bluetooth ile bas-konuş ve mesajlaşma.
+İnternetsiz telsiz: iki telefon arası konuş, yazış, fotoğraf gönder.
 ```
-(75 karakter)
+(68 karakter)
 
 ## Tam açıklama (≤4000 karakter)
 ```
 LaserDeck PTT, iki Android telefonu internetsiz ortamda birbirine bağlayan bir
-telsiz uygulamasıdır. Şebeke çekmeyen yerlerde — dağda, bodrumda, fuar alanında,
-afet anında — Bluetooth üzerinden doğrudan telefondan telefona konuşabilir ve
-yazışabilirsiniz.
+telsiz uygulamasıdır. Şebeke çekmeyen yerlerde — dağda, bodrumda, fuar alanında —
+Bluetooth üzerinden doğrudan telefondan telefona konuşabilir, arayabilir, yazışabilir
+ve fotoğraf gönderebilirsiniz. Her iki telefonda da uygulama kurulu olmalıdır.
 
 ÖZELLİKLER
-• Tamamen çevrimdışı: SIM, Wi-Fi ağı ya da internet gerekmez
-• Sunucu yok, hesap yok, kayıt yok: her şey doğrudan cihazdan cihaza gider
-• Bas-konuş: düğmeye basılı tut, bırakınca karşı taraf konuşur (yarı çift yönlü)
-• Mesajlaşma: aynı hat üzerinden yazışma, teslim onaylı
-• Hat kopukken yazdığınız mesaj kuyrukta bekler, bağlantı dönünce kendiliğinden
-  gönderilir
-• Sohbet geçmişi telefonda saklanır; uygulamayı kapatsanız da durur
-• Arka planda çalışır: ekran kapalıyken de hat açık kalır (kalıcı bildirim)
-• Kopan bağlantıyı otomatik yeniden kurar
-• Düşük bant genişliği ses kodlaması (AMR-NB) ile kararlı iletim
-• Veri toplamaz: analitik yok, reklam yok, izleme yok
+• Bas-konuş: düğmeye basılı tut, bırakınca karşı taraf konuşur
+• Sesli arama: karşı telefon çalar, yanıtlanınca iki yönlü konuşursunuz; telefonun
+  yankı giderici ve gürültü bastırması kullanılır
+• Mesajlaşma: aynı hat üzerinden teslim onaylı yazışma; hat kopukken yazılan mesaj
+  kuyrukta bekler, bağlantı dönünce gider
+• Fotoğraf aktarımı: seçtiğiniz fotoğraf yeniden sıkıştırılmadan, bütünlüğü
+  doğrulanarak gider; alınanlar galerinizde Pictures/LaserDeck klasörüne kaydedilir
+  (yaklaşık 4 MB iki dakika sürer)
+• Yakınlık radarı: Bluetooth LE sinyal gücünden kaba mesafe aralığı ve
+  yaklaşıyor/uzaklaşıyor eğilimi (yön vermez; Android 12+)
+• GPS şerit metre: tek telefonla iki nokta arası mesafe, hata bandıyla (isteğe bağlı
+  konum izni)
+• MODÜL sekmesi: duyuru panosu, taşıyıcı ağ, senkron gösteri, yakınlık kasası
+• Arka planda çalışır: çağrı ve hat sürerken kalıcı bildirim gösterilir
+• Sunucu yok, hesap yok, reklam yok, analitik yok
 
 NASIL KULLANILIR
 1) İki telefonu Android Ayarlar > Bluetooth menüsünden eşleştirin.
-2) Uygulamayı iki telefona da kurun.
+2) Uygulamayı iki telefona da kurun, mikrofon ve Bluetooth izinlerini verin.
 3) Bir telefonda "BEKLE"ye basın; diğerinde cihazı seçip "BAĞLAN"a basın.
-4) TELSİZ sekmesinde büyük düğmeye basılı tutarak konuşun,
-   MESAJ sekmesinden yazışın.
+4) TELSİZ sekmesinde büyük düğmeye basılı tutarak konuşun, MESAJ sekmesinden yazışın.
 
 MENZİL
-Bluetooth menzili açık alanda ve görüş hattında en iyi sonucu verir (tipik
-10–30 m; cihaza göre değişir). Duvarlar ve engeller menzili azaltır.
+Bluetooth menzili açık alanda ve görüş hattında en iyi sonucu verir (tipik 10–30 m;
+cihaza göre değişir). Duvarlar ve engeller menzili azaltır.
 
 İZİNLER
-• Mikrofon: yalnızca bas-konuş düğmesine basılıyken ses yakalamak için.
-• Bluetooth: eşleşmiş telefona bağlanmak için.
-• Bildirim: hat durumunu ve gelen mesajı göstermek için.
-Ses hiçbir yerde saklanmaz, hiçbir sunucuya gönderilmez; yalnızca karşı
-telefona anlık iletilir. Mesajlar yalnızca iki telefonun kendi belleğinde
-tutulur — hiçbir sunucuya ulaşmaz.
+• Mikrofon: bas-konuş sırasında ve sesli aramada ses yakalamak için.
+• Bluetooth / yakındaki cihazlar: eşleşmiş telefona bağlanmak ve radar/duyuru için.
+• Konum (isteğe bağlı): yalnızca GPS şerit metre modülü için; konum gönderilmez,
+  diske yazılmaz.
+• Bildirim: hat ve çağrı durumunu göstermek için.
+Ses kaydedilmez ve hiçbir sunucuya gönderilmez. Sohbet geçmişi ve alınan
+fotoğraflar telefonunuzda kalır. İnternet yalnızca "yeni sürüm var mı?" sorusu için
+kullanılır.
 
-LaserDeck açık kaynak donanım/yazılım projesinin bir parçasıdır.
+Bu uygulama bir ön sürümdür. Kaynak kodu GitHub'da herkese açıktır:
+github.com/Voyagerroc/LaserDeck
 ```
+(Karakter sayılarını konsola yapıştırmadan önce sayın; sınırlar üstte.)
 
 ## English (EN-US) — ikincil dil olarak eklenebilir
 
@@ -60,13 +69,12 @@ LaserDeck açık kaynak donanım/yazılım projesinin bir parçasıdır.
 **Short:** `Offline walkie-talkie: talk and text between two phones over Bluetooth.`
 **Full:** TR metnin çevirisi (konsola eklerken istenirse üretilir).
 
-## Sürüm notu (1.1.0 — "Yenilikler" alanı, ≤500 karakter)
+## Sürüm notu (2.1.0 — "Yenilikler" alanı, ≤500 karakter)
 ```
-Mesajlaşma geldi. Aynı Bluetooth hattı üzerinden artık yazışabilirsiniz:
-teslim onayı, telefonda saklanan sohbet geçmişi ve gelen mesaj bildirimi.
-Hat kopukken yazdığınız mesaj kuyrukta bekler, bağlantı dönünce kendiliğinden
-gönderilir. Uygulama arayüzü baştan tasarlandı: TELSİZ ve MESAJ olarak iki
-sekme, koyu aygıt teması ve okunması kolay hat göstergesi.
+GPS şerit metre: tek telefonla iki nokta arası mesafe, hata bandıyla (isteğe bağlı
+konum izni). Radar ölçümü iki yönlü oldu ve ilan gücü düzeltmesi eklendi. Ayrıca
+sesli arama, fotoğraf aktarımı, duyuru panosu ve yakınlık kasası bu sürüm hattında
+yer alır.
 ```
 
 ## Grafikler (bu klasörde)
