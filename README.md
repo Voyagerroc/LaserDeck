@@ -17,7 +17,7 @@ LaserDeck, birbirine yakın iki Android telefon arasında internetsiz, sunucusuz
 
 ## İndirme
 
-[v2.1.0 sürüm sayfası](https://github.com/Voyagerroc/LaserDeck/releases/tag/v2.1.0) (ön sürüm): `laserdeck-ptt-2.1.0.apk` (yaklaşık 1,2 MB) ve `SHA256SUMS.txt` dosyası. APK'yı kurmadan önce SHA-256 özetini bu dosyayla karşılaştırın. Android 8.0 ve üstü gerekir. Ürün sayfası: [voyagerroctechnologies.com/urunler/laserdeck](https://voyagerroctechnologies.com/urunler/laserdeck/).
+[v2.1.0 sürüm sayfası](https://github.com/Voyagerroc/LaserDeck/releases/tag/v2.1.0) (ön sürüm): `laserdeck-ptt-2.1.0.apk` (yaklaşık 1,2 MB) ve `SHA256SUMS.txt` dosyası. APK'yı kurmadan önce SHA-256 özetini bu dosyayla karşılaştırın. Android 8.0 ve üstü gerekir. [Ürün sayfası](https://voyagerroctechnologies.com/urunler/laserdeck/) sitede.
 
 Sürümdeki APK, var olan genel dağıtımdan değiştirilmeden alınmıştır; sürüm notları imza doğrulamasını ve neyin iddia edilmediğini açıklar. Bu APK kaynaktan yeniden derlenmedi ve kaynakla birebir eşleştiği kanıtlanmadı ([docs/RELEASE.md](docs/RELEASE.md)).
 
