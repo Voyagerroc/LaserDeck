@@ -1,51 +1,75 @@
 # LaserDeck
 
-Push-to-talk, calls, messages and photos between two Android phones over Bluetooth, with no internet, server or account.
+Push-to-talk, voice calls, messages and photos between two nearby Android phones over Bluetooth, with no internet, server or account. For people who need to talk where there is no signal: field work, hiking, events, building sites.
 
-LaserDeck, birbirine yakın iki Android telefon arasında internetsiz, sunucusuz ve hesapsız bas-konuş, arama, mesajlaşma ve fotoğraf aktarımı sağlayan Kotlin uygulamasıdır.
+**Türkçe özet:** LaserDeck, birbirine yakın iki Android telefon arasında internet, sunucu veya hesap gerektirmeden bas-konuş, sesli arama, mesajlaşma ve fotoğraf aktarımı sağlayan bir uygulamadır. Bağlantı yalnızca Bluetooth üzerinden kurulur; kapsama alanı olmayan yerlerde iletişim için tasarlanmıştır. Uygulama şu an v2.1.0 ön sürüm (pre-release) aşamasındadır.
 
-**Durum:** v2.1.0 ön sürüm · MIT · birim testleri CI'da geçiyor · iki fiziksel telefonla kabul denemesi kayıtlı değil.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/laserdeck-screens-dark.webp">
-  <img src="docs/assets/laserdeck-screens-light.webp" alt="LaserDeck 2.1.0 uygulamasının üç gerçek ekranı: telsiz sekmesi, mesaj sekmesi ve GPS şerit metre bölümünün göründüğü modül sekmesi, hepsi boşta." width="100%">
-</picture>
-
-*Gerçek emülatör ekran görüntüleri (2.1.0 hata ayıklama sürümü, ikinci telefon bağlı değil). Ekran görüntüleri ham, yalnızca çerçeve ve etiket eklendi.*
+**Status:** v2.1.0 pre-release (MVP, testing before launch). Unit tests run in CI; no two-phone physical acceptance test is recorded yet.
 
 [![CI status](https://github.com/Voyagerroc/LaserDeck/actions/workflows/ci.yml/badge.svg)](https://github.com/Voyagerroc/LaserDeck/actions/workflows/ci.yml)
 
-## İndirme
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/laserdeck-screens-dark.webp">
+  <img src="docs/assets/laserdeck-screens-light.webp" alt="Three real LaserDeck 2.1.0 screens: walkie-talkie tab, messages tab and modules tab showing the GPS tape measure, all idle." width="100%">
+</picture>
 
-[v2.1.0 sürüm sayfası](https://github.com/Voyagerroc/LaserDeck/releases/tag/v2.1.0) (ön sürüm): `laserdeck-ptt-2.1.0.apk` (yaklaşık 1,2 MB) ve `SHA256SUMS.txt` dosyası. APK'yı kurmadan önce SHA-256 özetini bu dosyayla karşılaştırın. Android 8.0 ve üstü gerekir. [Ürün sayfası](https://voyagerroctechnologies.com/urunler/laserdeck/) sitede.
+*Real emulator screenshots (2.1.0 debug build, no second phone connected); only frames and labels were added. The app UI is in Turkish with a single fixed dark theme. Store graphics under `android/play/` are designed artwork, not device captures.*
 
-Sürümdeki APK, var olan genel dağıtımdan değiştirilmeden alınmıştır; sürüm notları imza doğrulamasını ve neyin iddia edilmediğini açıklar. Bu APK kaynaktan yeniden derlenmedi ve kaynakla birebir eşleştiği kanıtlanmadı ([docs/RELEASE.md](docs/RELEASE.md)).
+## What it does
 
-## Neler var, neler denendi
+- **Push-to-talk** (half duplex), like a walkie-talkie.
+- **Full-duplex voice calls** with echo cancellation and noise suppression where the device supports it.
+- **Messaging** with delivery receipts, offline queue and history.
+- **Photo transfer** of the original bytes, verified with SHA-256.
+- **Proximity radar** (Android 12+): shows distance as a ring, not direction.
+- **GPS tape measure**: distance between two points, always shown with a ± error band.
 
-Tablodaki her işlev kaynakta bulunur; ikinci sütun CI'daki birim testlerinin neyi kapsadığını gösterir. Hiçbir satır iki fiziksel telefonla denenmiş sayılmaz: [docs/RELEASE.md](docs/RELEASE.md) bu sürüm için fiziksel cihaz kabul testi yapılmadığını kaydeder, [android/README.md](android/README.md) ise iki telefonlu denemeyi bir plan olarak anlatır.
+Everything runs over Bluetooth Classic RFCOMM. No internet, Wi-Fi, mobile data, server or account is used. The only network call is an update check that carries no user data. Location is read only while the GPS tape measure is open and never leaves the device.
 
-| İşlev | Birim testi |
+## Who it is for
+
+- Pairs or small teams who need to talk where there is no mobile coverage (outdoors, rural sites, basements, events).
+- Anyone who prefers private device-to-device communication without accounts or cloud services.
+- Android developers interested in a Bluetooth RFCOMM framing/transport design in Kotlin.
+
+## Download
+
+[v2.1.0 release page](https://github.com/Voyagerroc/LaserDeck/releases/tag/v2.1.0) (pre-release): `laserdeck-ptt-2.1.0.apk` (about 1.2 MB) and `SHA256SUMS.txt`. Compare the SHA-256 before installing. Requires Android 8.0 (API 26) or newer. Product page: [voyagerroctechnologies.com/urunler/laserdeck](https://voyagerroctechnologies.com/urunler/laserdeck/).
+
+The release APK is the existing public build, attached unchanged; it was not rebuilt from this source and is not proven byte-identical to it. See [docs/RELEASE.md](docs/RELEASE.md).
+
+## Feature and test coverage
+
+Every feature below exists in the source. The second column shows what CI unit tests cover. None is counted as accepted on two physical phones yet ([docs/RELEASE.md](docs/RELEASE.md); the two-phone plan is in [android/README.md](android/README.md)).
+
+| Feature | Unit tests |
 |---|---|
-| Bas-konuş (yarı çift yönlü) | Yok; yalnızca `LinkFrame` testli |
-| Tam çift yönlü sesli arama (yankı iptali, gürültü bastırma) | Yok |
-| Mesajlaşma (teslim onayı, çevrimdışı kuyruk, geçmiş) | Var (`MessengerTest`) |
-| Fotoğraf aktarımı (orijinal bayt, SHA-256) | Yok |
-| Yakınlık radarı (Android 12 ve üstü) | Yok |
-| GPS şerit metre (± bandıyla) | Kısmen: hesap testli, alıcı değil (`GeodesyTest`) |
-| Uygulama içi güncelleme denetimi | Yok |
+| Push-to-talk | None; only the `LinkFrame` framing layer is tested (`LinkFrameTest`) |
+| Full-duplex call (AEC, noise suppression) | None |
+| Messaging (receipts, offline queue, history) | Yes (`MessengerTest`, `TextPayloadTest`) |
+| Photo transfer (original bytes, SHA-256) | None |
+| Proximity radar (Android 12+) | None |
+| GPS tape measure (± band) | Partly: math tested (`GeodesyTest`), receiver not |
+| In-app update check | None |
 
-**Taşıyıcı:** Bluetooth Classic RFCOMM. İnternet, Wi-Fi, hücresel veri, sunucu ve hesap kullanılmaz. Uygulamanın yaptığı tek ağ çağrısı sürüm denetimidir ve hiçbir kullanıcı verisi taşımaz. Konum yalnızca GPS şerit metre modülü açıkken okunur ve cihazdan çıkmaz.
+**Limits.** Expected range is roughly 10–30 m line of sight, based on radio physics, not measured with two phones in this release. Hardware echo cancellation depends on the device; the call screen says so when it is missing. The radar measures distance only (one antenna cannot give direction). A single consumer GPS fix is about ±3–5 m; the difference of two points is better but not error-free.
 
-**Sınırlar.** Menzil görüş hattında yaklaşık 10–30 m beklenir. Bu, radyonun fiziğine dayanan bir beklentidir; bu sürümde iki telefonla ölçülmedi. Donanım yankı iptali cihaza bağlıdır; yoksa arama ekranı bunu söyler. Radar mesafe ölçer, yön ölçmez: tek antenle yön üretilemez, hedef nokta değil halka olarak çizilir. GPS şerit metre tüketici alıcısının fiziğine bağlıdır: tek fix ±3–5 m; iki noktanın farkı daha iyidir ama hatasız değildir, her sonuç ± bandıyla yazılır.
+## For developers
 
-## Görüntüler hakkında
+**Tech stack:** Kotlin 2.1.0, Android Gradle Plugin 8.10.1, Gradle wrapper, compileSdk/targetSdk 36, minSdk 26. CI on GitHub Actions (`.github/workflows/ci.yml`), plus `.gitlab-ci.yml`.
 
-Üstteki üç ekran gerçektir: 2.1.0 hata ayıklama sürümü, Android emülatörü, boşta, çünkü ikinci telefon bağlı değildi. Çerçeve ve etiketler sonradan eklendi, ekran görüntüleri değiştirilmedi. Uygulamanın tek ve sabit bir koyu teması vardır; arayüz Türkçedir. GPS şerit metre kapalıdır, görüntüde ölçüm yoktur. `android/play/` altındaki mağaza görselleri üretilmiş tasarımlardır, cihaz görüntüsü değildir.
+**Repo layout**
 
-## Derleme
+```
+android/            Android app (Gradle project)
+  app/src/main/     Kotlin sources (com.voyagerroc...), resources, manifest
+  app/src/test/     JVM unit tests
+  play/             Store listing assets, privacy policy, surum.json version manifest
+docs/RELEASE.md     Release checklist and provenance notes
+docs/assets/        README screenshots
+```
 
-Gerekenler: JDK 17, Android SDK Platform 36, Git ve ilk bağımlılık indirmeleri için ağ erişimi. Gradle sarmalayıcı, Android Gradle Plugin ve Kotlin sürümleri [`android/gradle/wrapper/gradle-wrapper.properties`](android/gradle/wrapper/gradle-wrapper.properties) ile [`android/build.gradle.kts`](android/build.gradle.kts) içinde tanımlıdır; ayrıca sistem Gradle kurulumu gerekmez. SDK yolunu yerel `android/local.properties` içindeki `sdk.dir` ile veya `ANDROID_HOME` ile tanımlayın; bu dosya depoya girmez.
+**Build and test.** Requirements: JDK 17, Android SDK Platform 36, Git, and network access for the first dependency download. Set the SDK path via `sdk.dir` in a local `android/local.properties` (not committed) or `ANDROID_HOME`.
 
 Windows PowerShell:
 
@@ -62,11 +86,11 @@ chmod +x gradlew
 ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
 ```
 
-Bu komutlar imza anahtarı veya fiziksel cihaz istemez. Debug APK `android/app/build/outputs/apk/debug/` altında oluşur. Release imzalama ve dağıtım kanıtı için [sürüm kontrol listesini](docs/RELEASE.md), kaynak haritası ve iki telefonlu deneme planı için [Android kılavuzunu](android/README.md) okuyun.
+No signing key or physical device is needed. The debug APK is written to `android/app/build/outputs/apk/debug/`. For release signing see [docs/RELEASE.md](docs/RELEASE.md); for the source map and two-phone test plan see [android/README.md](android/README.md).
 
-## Mimari
+### Architecture
 
-Tüm modüller taşıyıcıdan bağımsız `LinkFrame` çerçeve katmanı üzerinde çalışır; taşıyıcı `FrameTransport` arayüzünün arkasındadır.
+All modules sit on the transport-independent `LinkFrame` framing layer; the carrier is behind the `FrameTransport` interface (currently `BluetoothRfcommTransport`). Diagram labels are in Turkish, matching the app.
 
 ```mermaid
 flowchart TD
@@ -98,12 +122,15 @@ flowchart TD
     FT --> BT
 ```
 
-## Dağıtım
+### Distribution
 
-Sürüm sitesi Cloudflare Workers üzerindedir: `android/play/` altında mağaza paketi, gizlilik politikası ve `surum.json` sürüm bildirimi bulunur. Güvenlik bildirimi için [SECURITY.md](SECURITY.md), katkı için [CONTRIBUTING.md](CONTRIBUTING.md), iletişim için [sitenin iletişim sayfası](https://voyagerroctechnologies.com/yasal/iletisim/).
+The release site runs on Cloudflare Workers; `android/play/` contains the store package, privacy policy and the `surum.json` version manifest used by the update check.
 
-## Lisans
+## Contributing, security, license
 
-MIT, bkz. [LICENSE](LICENSE).
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security reports: [SECURITY.md](SECURITY.md)
+- Contact: [voyagerroctechnologies.com/yasal/iletisim](https://voyagerroctechnologies.com/yasal/iletisim/)
+- License: MIT, see [LICENSE](LICENSE)
 
-Erol Taşcı, Voyagerroc Technologies · [voyagerroctechnologies.com](https://voyagerroctechnologies.com/)
+Made by [Voyagerroc Technologies](https://voyagerroctechnologies.com/).
