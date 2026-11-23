@@ -44,9 +44,9 @@ Every feature below exists in the source. The second column shows what CI unit t
 
 | Feature | Unit tests |
 |---|---|
-| Push-to-talk | None; only `LinkFrame` is tested |
+| Push-to-talk | None; only the `LinkFrame` framing layer is tested (`LinkFrameTest`) |
 | Full-duplex call (AEC, noise suppression) | None |
-| Messaging (receipts, offline queue, history) | Yes (`MessengerTest`) |
+| Messaging (receipts, offline queue, history) | Yes (`MessengerTest`, `TextPayloadTest`) |
 | Photo transfer (original bytes, SHA-256) | None |
 | Proximity radar (Android 12+) | None |
 | GPS tape measure (± band) | Partly: math tested (`GeodesyTest`), receiver not |
