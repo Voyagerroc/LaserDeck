@@ -65,5 +65,5 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // android.jar'daki org.json yalnızca boş bir taslak; gerçek uygulama olmadan
     // MessageStore birim testinde çalışamaz.
-    testImplementation("org.json:json:20240303")
+    testImplementation("org.json:json:20260814")
 }
