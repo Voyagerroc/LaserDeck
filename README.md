@@ -56,7 +56,7 @@ Every feature below exists in the source. The second column shows what CI unit t
 
 ## For developers
 
-**Tech stack:** Kotlin 2.1.0, Android Gradle Plugin 8.10.1, Gradle wrapper, compileSdk/targetSdk 36, minSdk 26. CI on GitHub Actions (`.github/workflows/ci.yml`), plus `.gitlab-ci.yml`.
+**Tech stack:** Kotlin 2.4.21, Android Gradle Plugin 9.5.3, Gradle wrapper, compileSdk/targetSdk 36, minSdk 26. CI on GitHub Actions (`.github/workflows/ci.yml`), plus `.gitlab-ci.yml`.
 
 **Repo layout**
 
